@@ -22,18 +22,17 @@ namespace OAuthTwoDemo.XForms.Android
 
            var auth = new OAuth2Authenticator(
                clientId: App.Instance.OAuthSettings.ClientId,
-               clientSecret: App.Instance.OAuthSettings.ClientSecret,// your OAuth2 client id
-               authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl), // the auth URL for the service
-               scope: App.Instance.OAuthSettings.Scope, // The scopes for the particular API you're accessing. The format for this will vary by API.
+               clientSecret: App.Instance.OAuthSettings.ClientSecret,
+               authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl), 
+               scope: App.Instance.OAuthSettings.Scope, 
                redirectUrl: new Uri(App.Instance.OAuthSettings.RedirectUrl),
                accessTokenUrl: new Uri(App.Instance.OAuthSettings.AccessToken), 
-               getUsernameAsync: null); // the redirect URL for the service
+               getUsernameAsync: null); 
 
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated)
                 {
                     App.Instance.SuccessfulLoginAction.Invoke();
-                    // Use eventArgs.Account to do wonderful things
                     App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
                 }
                 else
