@@ -20,13 +20,14 @@ namespace OAuthTwoDemo.XForms.Android
             // this is a ViewGroup - so should be able to load an AXML file and FindView<>
             var activity = this.Context as Activity;
 
-            var auth = new OAuth2Authenticator(
-                clientId: App.Instance.OAuthSettings.ClientId,
-                clientSecret: App.Instance.OAuthSettings.ClientSecret,// your OAuth2 client id
-                authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl), // the auth URL for the service
-                scope: App.Instance.OAuthSettings.Scope, // The scopes for the particular API you're accessing. The format for this will vary by API.
-                redirectUrl: new Uri(App.Instance.OAuthSettings.RedirectUrl),
-                accessTokenUrl: new Uri(App.Instance.OAuthSettings.AccessToken)); // the redirect URL for the service
+           var auth = new OAuth2Authenticator(
+               clientId: App.Instance.OAuthSettings.ClientId,
+               clientSecret: App.Instance.OAuthSettings.ClientSecret,// your OAuth2 client id
+               authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl), // the auth URL for the service
+               scope: App.Instance.OAuthSettings.Scope, // The scopes for the particular API you're accessing. The format for this will vary by API.
+               redirectUrl: new Uri(App.Instance.OAuthSettings.RedirectUrl),
+               accessTokenUrl: new Uri(App.Instance.OAuthSettings.AccessToken), 
+               getUsernameAsync: null); // the redirect URL for the service
 
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated)
@@ -37,7 +38,7 @@ namespace OAuthTwoDemo.XForms.Android
                 }
                 else
                 {
-                    // The user cancelled
+                    //;
                 }
             };
 

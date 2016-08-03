@@ -1,4 +1,5 @@
 ﻿using MyFitness.Authentication;
+using MyFitness.Helpers;
 using MyFitness.Pages;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,8 @@ namespace MyFitness
                                     clientId: "1255",       // your OAuth2 client id 
                                     scope: "write",  		// The scopes for the particular API you're accessing. The format for this will vary by API.
                                     authorizeUrl: "https://www.strava.com/oauth/authorize",  	// the auth URL for the service
-                                    redirectUrl: "http://localhost/",
-                                    accessToken: "95a4dbb088a2453660c61e7b0f06df7bc9d7f792",
+                                    redirectUrl: "http://www.tallmancycles.com.au",
+                                    accessToken: "https://www.strava.com/oauth/token",
                                     clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");   // the redirect URL for the service
                         }
                     }
@@ -53,29 +54,29 @@ namespace MyFitness
 
         public Page GetMainPage()
         {
-            var profilePage = new ProfilePage();
-
-            _NavPage = new NavigationPage(profilePage);
+            var mainPage = new MainContentPage();
+            _NavPage = new NavigationPage(mainPage);
 
             return _NavPage;
         }
 
         public bool IsAuthenticated
         {
-            get { return !string.IsNullOrWhiteSpace(_Token); }
+            get { return !string.IsNullOrWhiteSpace(Settings.AccessToken); }
         }
 
-        string _Token;
         public string Token
         {
-            get { return _Token; }
+            get { return Helpers.Settings.AccessToken; }
         }
 
         public void SaveToken(string token)
         {
-            _Token = token;
+            Settings.AccessToken = token;
 
             // broadcast a message that authentication was successful
+            MainPage = new NavigationPage(new MainContentPage());
+
             MessagingCenter.Send<App>(this, "Authenticated");
         }
 
