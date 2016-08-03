@@ -39,7 +39,7 @@ namespace MyFitness
                                     authorizeUrl: "https://www.strava.com/oauth/authorize",  	// the auth URL for the service
                                     redirectUrl: "http://www.tallmancycles.com.au",
                                     accessToken: "https://www.strava.com/oauth/token",
-                                    clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");   // the redirect URL for the service
+                                    clientSecret: "");   // the redirect URL for the service
                         }
                     }
                 }
