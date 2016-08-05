@@ -1,6 +1,7 @@
 ﻿using MyFitness.Authentication;
 using MyFitness.Helpers;
 using MyFitness.Pages;
+using MyFitness.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MyFitness
 {
-    public class App : Application
+    public class App : Application, ILoginManager
     {
         public App()
         {
@@ -34,12 +35,12 @@ namespace MyFitness
                             _Instance = new App();
                             _Instance.OAuthSettings =
                                 new Auth(
-                                    clientId: "1255",       // your OAuth2 client id 
-                                    scope: "write",  		// The scopes for the particular API you're accessing. The format for this will vary by API.
-                                    authorizeUrl: "https://www.strava.com/oauth/authorize",  	// the auth URL for the service
+                                    clientId: "1255",
+                                    scope: "write", 
+                                    authorizeUrl: "https://www.strava.com/oauth/authorize", 
                                     redirectUrl: "http://www.tallmancycles.com.au",
                                     accessToken: "https://www.strava.com/oauth/token",
-                                    clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");   // the redirect URL for the service
+                                    clientSecret: "");
                         }
                     }
                 }
@@ -54,8 +55,14 @@ namespace MyFitness
 
         public Page GetMainPage()
         {
-            var mainPage = new MainContentPage();
-            _NavPage = new NavigationPage(mainPage);
+            if (IsAuthenticated)
+            {
+                _NavPage = new NavigationPage(new MainPage());
+            }
+            else
+            {
+                _NavPage = new NavigationPage(new LoginPage());
+            }
 
             return _NavPage;
         }
@@ -73,11 +80,13 @@ namespace MyFitness
         public void SaveToken(string token)
         {
             Settings.AccessToken = token;
+            MainPage = new NavigationPage(new MainPage());
+        }
 
-            // broadcast a message that authentication was successful
-            MainPage = new NavigationPage(new MainContentPage());
-
-            MessagingCenter.Send<App>(this, "Authenticated");
+        public void Logout()
+        {
+            Settings.AccessToken = "";
+            MainPage = new NavigationPage(new LoginPage());
         }
 
         public Action SuccessfulLoginAction
@@ -87,5 +96,7 @@ namespace MyFitness
                 return new Action(() => _NavPage.Navigation.PopModalAsync());
             }
         }
+
+        public 
     }
 }

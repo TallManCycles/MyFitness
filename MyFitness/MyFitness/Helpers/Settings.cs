@@ -47,7 +47,7 @@ namespace MyFitness.Helpers
             }
             set
             {
-                AppSettings.AddOrUpdateValue<string>(AccessToken, value);
+                AppSettings.AddOrUpdateValue<string>("AccessToken", value);
             }
         }
 
