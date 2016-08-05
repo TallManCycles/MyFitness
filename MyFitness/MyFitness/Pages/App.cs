@@ -15,11 +15,9 @@ namespace MyFitness
     {
         public App()
         {
-            // The root page of your application
             MainPage = GetMainPage();
         }
 
-        // just a singleton pattern so I can have the concept of an app instance
         static volatile App _Instance;
         static object _SyncRoot = new Object();
         public static App Instance

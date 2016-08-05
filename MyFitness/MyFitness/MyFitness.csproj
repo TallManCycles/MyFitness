@@ -35,6 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Data\Sql.cs" />
+    <Compile Include="Model\FitnessModel.cs" />
     <Compile Include="Pages\App.cs" />
     <Compile Include="Authentication\Auth.cs" />
     <Compile Include="Helpers\Settings.cs" />
@@ -45,6 +47,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ILoginManager.cs" />
+    <Compile Include="Services\ISqLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

@@ -3,6 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyFitness.Pages.MainPage">
   <StackLayout>
-    <Label Text="Hello!" VerticalOptions="Center" HorizontalOptions="Center" />    
+    <Label Text="{Binding FitnessValue}" FontSize="Large" HorizontalAlignment="CenterAndExpand" />  
   </StackLayout>
 </ContentPage>
