@@ -94,7 +94,5 @@ namespace MyFitness
                 return new Action(() => _NavPage.Navigation.PopModalAsync());
             }
         }
-
-        public 
     }
 }

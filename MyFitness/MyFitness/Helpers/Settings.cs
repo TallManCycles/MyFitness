@@ -51,5 +51,17 @@ namespace MyFitness.Helpers
             }
         }
 
+        public static bool HasCompletedSevenDays
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<bool>("SevenDaysComplete", false);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<bool>("SevenDaysComplete", value);
+            }
+        }
+
     }
 }

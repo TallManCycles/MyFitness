@@ -2,7 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyFitness.Pages.MainPage">
-  <StackLayout>
-    <Label Text="{Binding FitnessValue}" FontSize="Large" HorizontalAlignment="CenterAndExpand" />  
+  <StackLayout x:Name="MainLayout" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+    <Label Text="Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fitness}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+
+    <Label Text="Fatigue" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fatigue}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+
+    <Label Text="Overall Form" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Form}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+
+    <Entry x:Name="TSSEntry" Placeholder="Manual Tss" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Button Text="Submit" FontSize="Large" Clicked="ManualEntry" />
   </StackLayout>
 </ContentPage>

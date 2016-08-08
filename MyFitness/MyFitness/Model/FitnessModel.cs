@@ -12,10 +12,10 @@ namespace MyFitness.Model
 
         public DateTime Date { get; set; }
 
-        public int Fitness { get; set; }
+        public double Fitness { get; set; }
 
-        public int Fatigue { get; set; }
+        public double Fatigue { get; set; }
 
-        public int Form { get; set; }
+        public double Form { get; set; }
     }
 }

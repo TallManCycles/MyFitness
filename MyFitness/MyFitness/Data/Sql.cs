@@ -18,6 +18,7 @@ namespace MyFitness.Data
         public Sql()
         {
             database = DependencyService.Get<ISqLite>().GetConnection();
+            CreateTable();
         }
 
         public void CreateTable()
