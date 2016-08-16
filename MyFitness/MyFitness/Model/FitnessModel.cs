@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyFitness.Model
 {
-    class FitnessModel
+    public class FitnessModel
     {
         public int Id { get; set; }
 

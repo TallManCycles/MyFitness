@@ -1,5 +1,7 @@
 ﻿using MyFitness.Data;
+using MyFitness.Helpers;
 using MyFitness.Model;
+using MyFitness.Service;
 using MyFitness.Services;
 using System;
 using System.Collections.Generic;
@@ -15,16 +17,16 @@ namespace MyFitness.Pages
     {
         private object Webservice;
         private Sql _sql;
-        private WebService _webService;
+        private ActivityService _webService;
 
         public MainPage()
         {
             InitializeComponent();
-            _webService = new WebService();
+            _webService = new ActivityService();
             _sql = new Sql();
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             FitnessModel model = new FitnessModel()
             {
@@ -37,13 +39,13 @@ namespace MyFitness.Pages
 
             MainLayout.BindingContext = model;
 
-            //_webService.Get("https://www.strava.com/api/v3/activities/665030482?access_token=" + Helpers.Settings.AccessToken);
-
             base.OnAppearing();
         }
 
         private async void ManualEntry(object sender, EventArgs e)
         {
+            FitnessResponse response = await _webService.GetAthleteActivities(Settings.AccessToken);
+
             if (!String.IsNullOrEmpty(TSSEntry.Text))
             {
                 var items = _sql.GetFitnessItems();

@@ -24,6 +24,7 @@ namespace MyFitness.Data
         public void CreateTable()
         {
             database.CreateTable<FitnessModel>();
+            database.CreateTable<ActivityModel>();
         }
 
         public FitnessModel GetFitnessItem(int id)
@@ -44,6 +45,21 @@ namespace MyFitness.Data
         public int InsertFitness(FitnessModel f)
         {
             return database.Insert(f);
-        }        
+        } 
+        
+        public IEnumerable<ActivityModel> GetActivities()
+        {
+            return database.Table<ActivityModel>();
+        }   
+        
+        public ActivityModel GetActivity(int id)
+        {
+            return database.Table<ActivityModel>().Where(x => x.ActivityId == id).FirstOrDefault();
+        }    
+
+        public int InsertActivity(ActivityModel activity)
+        {
+            return database.Insert(activity);
+        }
     }
 }

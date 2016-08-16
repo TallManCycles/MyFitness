@@ -13,11 +13,6 @@ namespace MyFitness.Calculations
         const double CTLConst = 1 / 42;
         const double ATLConst = 1 / 7;
 
-        public Fitness()
-        {
-
-        }
-
         public FitnessModel CalculateFitness(int CurrentTSS, FitnessModel previousDay)
         {
             FitnessModel model = new FitnessModel();

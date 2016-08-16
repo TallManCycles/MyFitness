@@ -1,36 +1,63 @@
-﻿using System;
+﻿using MyFitness.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
-namespace MyFitness.Services
+namespace MyFitness.Service
 {
-    class WebService
+    public class WebService
     {
-        public WebService()
+        public async Task<FitnessResponse> ReceiveRequest(string url)
         {
-        }
+            var response = new FitnessResponse();
 
-        public async Task<WebResponse> Get(string url)
-        {
+            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(new Uri(url));
+            httpRequest.ContentType = "application/json";
+            httpRequest.Method = "GET";           
+
             try
             {
-                var request = WebRequest.Create(url);
-                WebResponse result = await request.GetResponseAsync();
-                if (result.ContentLength > 0)
+                using (WebResponse httpResponse = await httpRequest.GetResponseAsync())
                 {
-                    Stream stream = result.GetResponseStream();
+                    if (httpResponse != null)
+                    {
+                        response.Status = ((HttpWebResponse)httpResponse).StatusCode;
+                        Stream stream = httpResponse.GetResponseStream();
+                        using (StreamReader streamReader = new StreamReader(stream))
+                        {
+                            response.Content = await streamReader.ReadToEndAsync();
+                        }
+                    }
                 }
-                return result;
             }
-            catch (WebException e)
+            catch (WebException ex)
             {
-                throw;
+                if (ex.Response != null)
+                {
+                    using (WebResponse httpResponse = ex.Response)
+                    {
+                        response.Status = ((HttpWebResponse)httpResponse).StatusCode;
+
+                        Stream stream = httpResponse.GetResponseStream();
+
+                        using (StreamReader streamReader = new StreamReader(stream))
+                        {
+                            response.Content = await streamReader.ReadToEndAsync();
+                        }
+                    }
+                }
+                else
+                {
+                    response.Status = HttpStatusCode.BadRequest;
+                    return response;
+                }
             }
+
+            return response;
         }
     }
 }
