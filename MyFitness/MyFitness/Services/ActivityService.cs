@@ -19,27 +19,36 @@ namespace MyFitness.Services
             _webService = new WebService();
         }
 
-        public async Task<FitnessResponse> GetAthleteActivities(string authenticationToken)
+        public async Task<List<Activity>> GetAthleteActivities(string authenticationToken)
         {
-            var response = new FitnessResponse();
-
-            response = await _webService.ReceiveRequest("https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=" + authenticationToken);
+            FitnessResponse response = await _webService.ReceiveRequest(
+                "https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=" 
+                + authenticationToken 
+                + "&after=" 
+                + ConvertToUnixTimestamp(DateTime.Now.AddDays(-42)));
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {
                 try
                 {
-                    var Activity = JsonConvert.DeserializeObject<List<Activity>>(response.Content);
+                    return JsonConvert.DeserializeObject<List<Activity>>(response.Content);
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    return new List<Activity>();
                 }
             }
-
-            return response;
+            else
+            {
+                return new List<Activity>();
+            }
         }
 
-        
+        private static double ConvertToUnixTimestamp(DateTime date)
+        {
+            DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            TimeSpan diff = date.ToUniversalTime() - origin;
+            return Math.Floor(diff.TotalSeconds);
+        }
     }
 }

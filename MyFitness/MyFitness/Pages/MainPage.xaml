@@ -4,15 +4,14 @@
              x:Class="MyFitness.Pages.MainPage">
   <StackLayout x:Name="MainLayout" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
     <Label Text="Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Fitness}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
 
     <Label Text="Fatigue" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Fatigue}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fatigue, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
 
     <Label Text="Overall Form" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Form}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-
-    <Entry x:Name="TSSEntry" Placeholder="Manual Tss" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Button Text="Submit" FontSize="Large" Clicked="ManualEntry" />
+    <Label Text="{Binding Form, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    
+    <Button Text="Refresh" FontSize="Large" Clicked="Refresh" />
   </StackLayout>
 </ContentPage>

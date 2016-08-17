@@ -63,5 +63,17 @@ namespace MyFitness.Helpers
             }
         }
 
+        public static bool HasInitialCalculation
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<bool>("initalCalculation", false);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<bool>("initalCalculation", value);
+            }
+        }
+
     }
 }

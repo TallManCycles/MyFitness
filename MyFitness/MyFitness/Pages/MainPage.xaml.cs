@@ -1,6 +1,8 @@
-﻿using MyFitness.Data;
+﻿using MyFitness.Calculations;
+using MyFitness.Data;
 using MyFitness.Helpers;
 using MyFitness.Model;
+using MyFitness.Model.Strava;
 using MyFitness.Service;
 using MyFitness.Services;
 using System;
@@ -24,51 +26,27 @@ namespace MyFitness.Pages
             InitializeComponent();
             _webService = new ActivityService();
             _sql = new Sql();
+
         }
 
         protected override async void OnAppearing()
         {
-            FitnessModel model = new FitnessModel()
-            {
-                Fitness = 44,
-                Fatigue = 68,
-                Form = 44 - 68,
-                Date = DateTime.Now,
-                Id = 1
-            };
+            List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
+
+            FitnessModel model = Fitness.InitialCalculation(activities);
 
             MainLayout.BindingContext = model;
 
             base.OnAppearing();
         }
 
-        private async void ManualEntry(object sender, EventArgs e)
+        private async void Refresh(object sender, EventArgs e)
         {
-            FitnessResponse response = await _webService.GetAthleteActivities(Settings.AccessToken);
+            List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
 
-            if (!String.IsNullOrEmpty(TSSEntry.Text))
-            {
-                var items = _sql.GetFitnessItems();
+            FitnessModel model = Fitness.InitialCalculation(activities);
 
-                if (items.Any())
-                {
-                    foreach (FitnessModel i in items)
-                    {
-                        if (i.Date.Date == DateTime.Now.Date)
-                        {
-                            var result = await DisplayAlert("Confirm Entry", "You already have an entry for today. Would you like to overwrite?", "Yes", "No");
-
-                            if (!result)
-                                return;
-                        }
-                    }
-
-                    var models = items.OrderByDescending(x => x.Date);
-
-
-
-                }
-            }
+            MainLayout.BindingContext = model;
         }
     }
 }
