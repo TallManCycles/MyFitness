@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SQLite;
 
 namespace MyFitness.Model
 {
     public class FitnessModel
     {
+        [SQLite.PrimaryKey]
         public int Id { get; set; }
 
         public DateTime Date { get; set; }
 
-        public double Fitness { get; set; }
+        public decimal Fitness { get; set; }
 
-        public double Fatigue { get; set; }
+        public decimal Fatigue { get; set; }
 
-        public double Form { get; set; }
+        public decimal Form { get; set; }
     }
 }

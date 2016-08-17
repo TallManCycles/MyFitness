@@ -7,20 +7,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using MyFitness.Model.Strava;
+using MyFitness.Data;
 
 namespace MyFitness.Services
 {
     public class ActivityService
     {
         private WebService _webService;
+        private Sql _sql;
 
         public ActivityService()
         {
             _webService = new WebService();
+            _sql = new Sql();
         }
 
         public async Task<List<Activity>> GetAthleteActivities(string authenticationToken)
         {
+            var activities = new List<Activity>();
+
             FitnessResponse response = await _webService.ReceiveRequest(
                 "https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=" 
                 + authenticationToken 
@@ -31,16 +36,17 @@ namespace MyFitness.Services
             {
                 try
                 {
-                    return JsonConvert.DeserializeObject<List<Activity>>(response.Content);
+                    activities = JsonConvert.DeserializeObject<List<Activity>>(response.Content);
+                    return activities;
                 }
                 catch (Exception ex)
                 {
-                    return new List<Activity>();
+                    return activities;
                 }
             }
             else
             {
-                return new List<Activity>();
+                return activities;
             }
         }
 

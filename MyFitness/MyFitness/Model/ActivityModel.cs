@@ -13,7 +13,5 @@ namespace MyFitness.Model
         public double TSS { get; set; }
 
         public DateTime Date { get; set; }
-
-        public int DayId { get; set; }
     }
 }

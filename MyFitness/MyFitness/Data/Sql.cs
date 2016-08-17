@@ -8,6 +8,7 @@ using System.IO;
 using MyFitness.Services;
 using Xamarin.Forms;
 using MyFitness.Model;
+using MyFitness.Model.Strava;
 
 namespace MyFitness.Data
 {
@@ -44,7 +45,14 @@ namespace MyFitness.Data
 
         public int InsertFitness(FitnessModel f)
         {
-            return database.Insert(f);
+            if (GetFitnessItem(f.Id) != null)
+            {
+                return database.Update(f);
+            }
+            else
+            {
+                return database.Insert(f);
+            }
         } 
         
         public IEnumerable<ActivityModel> GetActivities()
@@ -59,7 +67,14 @@ namespace MyFitness.Data
 
         public int InsertActivity(ActivityModel activity)
         {
-            return database.Insert(activity);
+            if (GetActivity(activity.ActivityId) != null)
+            {
+                return database.Update(activity);
+            }
+            else
+            {
+                return database.Insert(activity);
+            }
         }
     }
 }

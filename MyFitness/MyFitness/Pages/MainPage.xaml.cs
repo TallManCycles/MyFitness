@@ -18,6 +18,7 @@ namespace MyFitness.Pages
     public partial class MainPage : ContentPage
     {
         private object Webservice;
+        private Fitness _fitness;
         private Sql _sql;
         private ActivityService _webService;
 
@@ -26,6 +27,7 @@ namespace MyFitness.Pages
             InitializeComponent();
             _webService = new ActivityService();
             _sql = new Sql();
+            _fitness = new Fitness();
 
         }
 
@@ -33,7 +35,7 @@ namespace MyFitness.Pages
         {
             List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
 
-            FitnessModel model = Fitness.InitialCalculation(activities);
+            FitnessModel model = _fitness.InitialCalculation(activities);
 
             MainLayout.BindingContext = model;
 
@@ -44,7 +46,7 @@ namespace MyFitness.Pages
         {
             List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
 
-            FitnessModel model = Fitness.InitialCalculation(activities);
+            FitnessModel model = _fitness.InitialCalculation(activities);
 
             MainLayout.BindingContext = model;
         }
