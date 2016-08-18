@@ -1,6 +1,7 @@
 // Helpers/Settings.cs
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
+using System;
 
 namespace MyFitness.Helpers
 {
@@ -63,15 +64,50 @@ namespace MyFitness.Helpers
             }
         }
 
-        public static bool HasInitialCalculation
+        public static string InitialCalculationDate
         {
             get
             {
-                return AppSettings.GetValueOrDefault<bool>("initalCalculation", false);
+                return AppSettings.GetValueOrDefault<string>("InitialCalculationDate", string.Empty);
             }
             set
             {
-                AppSettings.AddOrUpdateValue<bool>("initalCalculation", value);
+                AppSettings.AddOrUpdateValue<string>("InitialCalculationDate", value);
+            }
+        }
+
+        public static decimal CTL {
+            get
+            {
+                return AppSettings.GetValueOrDefault<decimal>("CTL", (decimal)1.00);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<decimal>("CTL", value);
+            }
+        }
+
+        public static decimal ATL
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<decimal>("ATL", (decimal)1.00);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<decimal>("ATL", value);
+            }
+        }
+
+        public static decimal TSB
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<decimal>("TSB", (decimal)1.00);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<decimal>("TSB", value);
             }
         }
 
