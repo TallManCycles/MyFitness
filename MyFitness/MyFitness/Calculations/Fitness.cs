@@ -1,4 +1,4 @@
-﻿using MyFitness.Data;
+using MyFitness.Data;
 using MyFitness.Helpers;
 using MyFitness.Model;
 using MyFitness.Model.Strava;
@@ -24,16 +24,35 @@ namespace MyFitness.Calculations
         {
             FitnessModel model = new FitnessModel();
 
+            if (activities == null)
+                return model;
+
+            if (!string.IsNullOrEmpty(Settings.InitialCalculationDate) && DateTime.Parse(Settings.InitialCalculationDate).Date != DateTime.Now.Date)
+            {
+                decimal TSS = (decimal)0.00;
+
+                IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date == DateTime.Now.Date);
+
+                foreach (Activity ad in dayActivity)
+                {
+                    if (ad.SufferScore.HasValue)
+                        TSS += ad.SufferScore.Value;
+                }
+
+                model.Fitness = Settings.CTL;
+                model.Fatigue = Settings.ATL;
+                model.Form = Settings.TSB;
+                model.Date = DateTime.Now.AddDays(-1);
+
+                return CalculateFitness(TSS, model);
+
+            }
+
             decimal CTL = 1;
             decimal ATL = 1;
             decimal TSB = 1;
 
-            if (activities == null)
-                return model;
-            if (Settings.HasInitialCalculation)
-                return model;
-
-                DateTime startDate = DateTime.Now.AddDays(-42);
+            DateTime startDate = DateTime.Now.AddDays(-42);
 
             for (int i = -42; i <= 0; i++)
             {
@@ -61,6 +80,11 @@ namespace MyFitness.Calculations
             model.Id = 1;
             model.Date = DateTime.Now.Date;
 
+            Settings.InitialCalculationDate = DateTime.Now.ToString();
+            Settings.CTL = model.Fitness;
+            Settings.ATL = model.Fatigue;
+            Settings.TSB = model.Form;
+
             return model;
         }
 
@@ -80,15 +104,16 @@ namespace MyFitness.Calculations
             return true;
         }
 
-        public FitnessModel CalculateFitness(int CurrentTSS, FitnessModel previousDay)
+        public FitnessModel CalculateFitness(decimal CurrentTSS, FitnessModel previousDay)
         {
             FitnessModel model = new FitnessModel();
 
             if (previousDay != null)
             {
-                model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * CTLConst);
-                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * ATLConst);
-                model.Form = model.Fitness - model.Fatigue;
+                model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
+                model.Form = model.Fitness - previousDay.Fatigue;
+                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
+                
                 model.Date = DateTime.Now.Date;
                 model.Id = previousDay.Id + 1;
 
