@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyFitness.Pages.MainPage">
+  <ScrollView>
   <StackLayout x:Name="MainLayout" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
     <Label Text="Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
     <Label Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
@@ -14,4 +15,5 @@
        
     <Button Text="Refresh" FontSize="Large" Clicked="Refresh" />
   </StackLayout>
+</ScrollView>
 </ContentPage>

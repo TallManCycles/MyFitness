@@ -27,16 +27,17 @@ namespace MyFitness.Calculations
         {
             var model = new FitnessModel() { Fitness = Settings.CTL, Fatigue = Settings.ATL, Form = Settings.TSB, Id = 1, Date = DateTime.Now };
 
-            if (Settings.PremiumAthlete)
-            {
+            var athlete = await _activityService.GetAthlete();
 
-                if (!string.IsNullOrEmpty(Settings.InitialCalculationDate) && DateTime.Parse(Settings.InitialCalculationDate).Date != DateTime.Now.Date)
-                {
-                    model = await CalculateFitnessPremium();
-                }
-                else
+            if (athlete.Premium)
+            {
+                if (string.IsNullOrEmpty(Settings.InitialCalculationDate))
                 {
                     model = await InitialCalculationPremium();
+                }
+                else if (!string.IsNullOrEmpty(Settings.InitialCalculationDate) && DateTime.Parse(Settings.InitialCalculationDate).Date != DateTime.Now.Date)
+                {
+                    model = await CalculateFitnessPremium();
                 }
             }
             else

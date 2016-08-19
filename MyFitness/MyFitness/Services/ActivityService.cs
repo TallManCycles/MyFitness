@@ -108,6 +108,30 @@ namespace MyFitness.Services
 
         }
 
+        public async Task<Athlete> GetAthlete()
+        {
+            var athlete = new Athlete();
+
+            FitnessResponse response = await _webService.ReceiveRequest("https://www.strava.com/api/v3/athlete?access_token=" + Settings.AccessToken);
+
+            if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    athlete = JsonConvert.DeserializeObject<Athlete>(response.Content);
+                    return athlete;
+                }
+                catch (Exception ex)
+                {
+                    return athlete;
+                }
+            }
+            else
+            {
+                return athlete;
+            }
+        }
+
         private static double ConvertToUnixTimestamp(DateTime date)
         {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
