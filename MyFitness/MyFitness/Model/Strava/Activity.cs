@@ -47,7 +47,7 @@ namespace MyFitness.Model.Strava
         public float ElevationLow { get; set; }
 
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public ActType Type { get; set; }
 
         [JsonProperty("start_date")]
         public string StartDate { get; set; }
@@ -101,5 +101,38 @@ namespace MyFitness.Model.Strava
         //running activities only
         //splits_standard:	array of standard split summaries
         //best_efforts:	array of best effort summaries
+    }
+
+    public enum ActType
+    {
+        Ride,
+        Kitesurf,
+        Run,
+        NordicSki,
+        Swim,
+        Hike,
+        Walk,
+        AlpineSki,
+        BackcountrySki,
+        Canoeing,
+        Crossfit,
+        EBikeRide,
+        Elliptical,
+        IceSkate,
+        InlineSkate,
+        Kayaking,
+        RockClimbing,
+        RollerSki,
+        Rowing,
+        Snowboard,
+        Snowshoe,
+        StairStepper,
+        StandUpPaddling,
+        Surfing,
+        VirtualRide,
+        WeightTraining,
+        Windsurf,
+        Workout,
+        Yoga
     }
 }

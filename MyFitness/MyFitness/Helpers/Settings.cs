@@ -111,5 +111,17 @@ namespace MyFitness.Helpers
             }
         }
 
+        public static bool PremiumAthlete
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<bool>("PremiumAthlete", false);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<bool>("PremiumAthlete", value);
+            }
+        }
+
     }
 }

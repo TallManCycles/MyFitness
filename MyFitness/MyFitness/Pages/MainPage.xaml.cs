@@ -33,9 +33,7 @@ namespace MyFitness.Pages
 
         protected override async void OnAppearing()
         {
-            List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
-
-            FitnessModel model = _fitness.InitialCalculation(activities);
+            FitnessModel model = await _fitness.GetCurrentFitness();
 
             MainLayout.BindingContext = model;
 
@@ -44,9 +42,7 @@ namespace MyFitness.Pages
 
         private async void Refresh(object sender, EventArgs e)
         {
-            List<Activity> activities = await _webService.GetAthleteActivities(Settings.AccessToken);
-
-            FitnessModel model = _fitness.InitialCalculation(activities);
+            FitnessModel model = await _fitness.GetCurrentFitness();
 
             MainLayout.BindingContext = model;
         }

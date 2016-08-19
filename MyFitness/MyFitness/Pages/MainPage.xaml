@@ -11,7 +11,7 @@
 
     <Label Text="Overall Form" FontSize="Large" HorizontalOptions="CenterAndExpand" />
     <Label Text="{Binding Form, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    
+       
     <Button Text="Refresh" FontSize="Large" Clicked="Refresh" />
   </StackLayout>
 </ContentPage>

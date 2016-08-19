@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using MyFitness.Model.Strava;
 using MyFitness.Data;
+using MyFitness.Helpers;
 
 namespace MyFitness.Services
 {
@@ -50,11 +51,75 @@ namespace MyFitness.Services
             }
         }
 
+        public async Task<MyFitness.Model.Strava.Stream[]> GetActivityStream(int activityId, StreamType type)
+        {
+            Stream[] s = new Stream[] { new Stream() };          
+
+            FitnessResponse response = await _webService.ReceiveRequest(
+                "https://www.strava.com/api/v3/activities/"
+                + activityId + "/streams/"
+                + Enum.GetName(typeof(StreamType), type)
+                + "?access_token="
+                + Settings.AccessToken);
+
+            if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    s = JsonConvert.DeserializeObject<Stream[]>(response.Content);
+                    return s;
+                }
+                catch (Exception ex)
+                {
+                    return s;
+                }
+            }
+            else
+            {
+                return s;
+            }
+
+        }
+
+        public async Task<ActivityZones> GetActivityZones()
+        {
+            var zones = new ActivityZones();
+
+            FitnessResponse response = await _webService.ReceiveRequest(
+                "https://www.strava.com/api/v3/athlete/zones?access_token="
+                + Settings.AccessToken);
+
+            if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
+            {
+                try
+                {
+                    zones = JsonConvert.DeserializeObject<ActivityZones>(response.Content);
+                    return zones;
+                }
+                catch (Exception ex)
+                {
+                    return zones;
+                }
+            }
+            else
+            {
+                return zones;
+            }
+
+        }
+
         private static double ConvertToUnixTimestamp(DateTime date)
         {
             DateTime origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             TimeSpan diff = date.ToUniversalTime() - origin;
             return Math.Floor(diff.TotalSeconds);
+        }
+
+        public enum StreamType
+        {
+            heartrate,
+            time,
+            distance
         }
     }
 }
