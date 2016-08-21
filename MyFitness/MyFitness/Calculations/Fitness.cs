@@ -151,7 +151,7 @@ namespace MyFitness.Calculations
                     {
                         if (zones != null)
                         {
-                            todaysSufferScore += await CalculateTSSFromActivity(ad.Id, zones, ad.Type);
+                            todaysSufferScore += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
                         }
                     }
                 }
@@ -212,7 +212,7 @@ namespace MyFitness.Calculations
 
             foreach (Activity ad in dayActivity)
             {
-                CurrentTSS += await CalculateTSSFromActivity(ad.Id, zones, ad.Type);
+                CurrentTSS += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
             }
 
             previousDay.Fitness = Settings.CTL;
@@ -239,13 +239,15 @@ namespace MyFitness.Calculations
             }
         }
 
-        private async Task<decimal> CalculateTSSFromActivity(int id, ActivityZones zones, ActType activityType)
+        private async Task<decimal> CalculateTSSFromActivity(int id, ActivityZones zones, ActType activityType, Activity activity)
         {
             decimal tss = 0.00M;
             decimal[] timeInZones = new decimal[] { 0.0M, 0.0M, 0.0M, 0.0M, 0.0M };
 
             Stream[] hrALL = await _activityService.GetActivityStream(id, ActivityService.StreamType.heartrate);
             Stream[] timeALL = await _activityService.GetActivityStream(id, ActivityService.StreamType.time);
+
+            
 
             Stream heartRate = hrALL.FirstOrDefault(x => x.Type == "heartrate");
             Stream time = timeALL.FirstOrDefault(x => x.Type == "time");       
@@ -327,7 +329,9 @@ namespace MyFitness.Calculations
             }
             else if (activityType == ActType.Swim)
             {
-                //Work this out soon;
+                var metersPerMin = activity.AverageSpeed * 60.00;
+                var IF = metersPerMin / Settings.SwimThresholdPace;
+                tss = (decimal)(IF * IF * IF) * (decimal)((activity.MovingTime / 60.00) / 60.00) * 100.00M;
             }
             else
             {

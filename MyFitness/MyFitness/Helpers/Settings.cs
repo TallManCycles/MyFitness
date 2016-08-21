@@ -52,15 +52,15 @@ namespace MyFitness.Helpers
             }
         }
 
-        public static bool HasCompletedSevenDays
+        public static bool HasCompletedInitialSetup
         {
             get
             {
-                return AppSettings.GetValueOrDefault<bool>("SevenDaysComplete", false);
+                return AppSettings.GetValueOrDefault<bool>("HasCompletedInitialSetup", false);
             }
             set
             {
-                AppSettings.AddOrUpdateValue<bool>("SevenDaysComplete", value);
+                AppSettings.AddOrUpdateValue<bool>("HasCompletedInitialSetup", value);
             }
         }
 
@@ -122,6 +122,32 @@ namespace MyFitness.Helpers
                 AppSettings.AddOrUpdateValue<bool>("PremiumAthlete", value);
             }
         }
+
+        public static bool CanSwim
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<bool>("CanSwim", false);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<bool>("CanSwim", value);
+            }
+        }
+
+        public static double SwimThresholdPace
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<double>("SwimThresholdPace", 0.00);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<double>("SwimThresholdPace", value);
+            }
+        }
+
+
 
     }
 }

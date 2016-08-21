@@ -1,13 +1,18 @@
-﻿using System;
+﻿using MyFitness.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
+[assembly: Dependency(typeof(ILoginManager))]
 namespace MyFitness.Services
 {
-    interface ILoginManager
+    public interface ILoginManager
     {
         void Logout();
+
+        void Initialize();
     }
 }

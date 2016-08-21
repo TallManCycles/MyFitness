@@ -58,6 +58,9 @@ namespace MyFitness.Model.Strava
         [JsonProperty("suffer_score")]
         public int? SufferScore { get; set; }
 
+        [JsonProperty("average_speed")]
+        public float AverageSpeed { get; set; }
+
         //suffer_score:	integer
 
         //timezone:	string
@@ -81,7 +84,6 @@ namespace MyFitness.Model.Strava
         //workout_type:	integer 
         //gear_id:	string
         //gear:	object
-        //average_speed:	float
         //max_speed:	float
         //average_cadence:	float
         //average_temp:	float

@@ -55,11 +55,21 @@ namespace MyFitness
         {
             if (IsAuthenticated)
             {
-                _NavPage = new NavigationPage(new MainPage());
+                if (Settings.HasCompletedInitialSetup)
+                {
+                    _NavPage = new NavigationPage(new MainPage());
+                }
             }
             else
             {
-                _NavPage = new NavigationPage(new LoginPage());
+                if (Settings.HasCompletedInitialSetup)
+                {
+                    _NavPage = new NavigationPage(new LoginPage());
+                }
+                else
+                {
+                    _NavPage = new NavigationPage(new InitialSetup(this)); 
+                }
             }
 
             return _NavPage;
@@ -78,13 +88,19 @@ namespace MyFitness
         public void SaveToken(string token)
         {
             Settings.AccessToken = token;
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = GetMainPage();
         }
 
         public void Logout()
         {
             Settings.AccessToken = "";
-            MainPage = new NavigationPage(new LoginPage());
+            _NavPage.Navigation.PopModalAsync();
+            MainPage = GetMainPage();
+        }
+
+        public void Initialize()
+        {
+            MainPage = new NavigationPage(new InitialSetup(DependencyService.Get<ILoginManager>()));
         }
 
         public Action SuccessfulLoginAction
