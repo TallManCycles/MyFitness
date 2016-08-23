@@ -17,7 +17,7 @@ namespace MyFitness
         {
             if (IsAuthenticated)
             {
-                MainPage = new NavigationPage(new MainPage(this));
+                MainPage = new Main(this);
             }
             else
             {
@@ -83,7 +83,7 @@ namespace MyFitness
 
         public void ShowMainPage()
         {
-            MainPage = new NavigationPage(new MainPage(this));
+            MainPage = new Main(this);
         }
 
         public void Logout()

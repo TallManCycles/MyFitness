@@ -22,41 +22,42 @@ namespace MyFitness.Pages
         private Fitness _fitness;
         private Sql _sql;
         private ActivityService _webService;
+        private FitnessModel model;
         SfCircularGauge fitnessguague;
         SfCircularGauge fatigueguage;
         SfCircularGauge formguague;
-        private ILoginManager _loginManager;
 
-        public MainPage(ILoginManager loginManager)
+        public MainPage()
         {            
             _webService = new ActivityService();
             _sql = new Sql();
             _fitness = new Fitness();
-            _loginManager = loginManager;
-
             InitializeComponent();
+            model = new FitnessModel();
         }
 
         protected override async void OnAppearing()
         {
-            FitnessModel model = await _fitness.GetCurrentFitness();
+            model = await _fitness.GetCurrentFitness();
+
+            MainLayout.BindingContext = model;
 
             fitnessguague = CreateGuague("Fitness", (double)model.Fitness, 0, 50, 10, FitnessType.fitness);
-            fatigueguage= CreateGuague("Fatigue", (double)model.Fatigue, 0, 50, 10, FitnessType.fatigue);
+            fatigueguage = CreateGuague("Fatigue", (double)model.Fatigue, 0, 50, 10, FitnessType.fatigue);
             formguague = CreateGuague("Form", (double)model.Form, -25, 25, 10, FitnessType.form);
 
             MainLayout.Children.Add(fitnessguague);
             MainLayout.Children.Add(fatigueguage);
             MainLayout.Children.Add(formguague);
 
-            MainLayout.BindingContext = model;
-
             base.OnAppearing();
         }
 
         private async void Refresh(object sender, EventArgs e)
         {
-            FitnessModel model = await _fitness.GetCurrentFitness();
+            model = await _fitness.GetCurrentFitness();
+            var athlete = await _webService.GetAthlete();
+            AthleteName.Text = athlete.FirstName;
 
             fitnessguague = CreateGuague("Fitness", (double)model.Fitness, 0, 50, 10, FitnessType.fitness);
             fatigueguage = CreateGuague("Fatigue", (double)model.Fatigue, 0, 50, 10, FitnessType.fatigue);
