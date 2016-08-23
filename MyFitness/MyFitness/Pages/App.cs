@@ -101,7 +101,8 @@ namespace MyFitness
         {
             get
             {
-                return new Action(() => ((App)App.Current).ShowMainPage());
+                var action = new Action(this.ShowMainPage);
+                return action;
             }
         }
     }

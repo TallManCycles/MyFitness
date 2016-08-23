@@ -103,6 +103,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Downloads\Xamarin.Auth-master\src\Xamarin.Auth.iOS\Xamarin.Auth.iOS.csproj">
+      <Project>{19A091BD-B0E7-49FC-BF83-4118D91A7DC3}</Project>
+      <Name>Xamarin.Auth.iOS</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
+    </ProjectReference>
     <ProjectReference Include="..\MyFitness\MyFitness.csproj">
       <Name>MyFitness</Name>
     </ProjectReference>
@@ -158,9 +164,6 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="Xamarin.Auth.iOS">
-      <HintPath>..\..\Components\xamarin.auth-1.2.3.1\lib\ios-unified\Xamarin.Auth.iOS.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.0.0.6482\lib\Xamarin.iOS10\Xamarin.Forms.Core.dll</HintPath>
       <Private>True</Private>
@@ -178,12 +181,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.iOS" />
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="xamarin.auth">
-      <Visible>False</Visible>
-      <Version>1.2.3.1</Version>
-    </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\TestIcon.xcassets\AppIcons.appiconset\Contents.json">

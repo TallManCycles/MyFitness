@@ -4,6 +4,8 @@ using System;
 using Xamarin.Auth;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using System.Threading;
+using System.Threading.Tasks;
 
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 
@@ -11,52 +13,52 @@ namespace MyFitness.iOS.Renderers
 {
     public class LoginPageRenderer : PageRenderer
     {
-        bool IsShown;
+        bool IsShown = false;
 
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
 
-            if (!IsShown)
+            var auth = new OAuth2Authenticator(
+           clientId: App.Instance.OAuthSettings.ClientId,
+           clientSecret: App.Instance.OAuthSettings.ClientSecret,
+           scope: App.Instance.OAuthSettings.Scope,
+           authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl),
+           redirectUrl: new Uri("http://www.tallmancycles.com.au"),
+           accessTokenUrl: new Uri(App.Instance.OAuthSettings.AccessToken)
+           );
+
+            auth.AllowCancel = true;
+
+            auth.Completed += (sender, eventArgs) =>
             {
-                IsShown = true;
+                DismissViewController(true, null);
 
-                var auth = new OAuth2Authenticator(
-               clientId: App.Instance.OAuthSettings.ClientId,
-               clientSecret: App.Instance.OAuthSettings.ClientSecret,
-               authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl),
-               scope: App.Instance.OAuthSettings.Scope,
-               redirectUrl: new Uri(App.Instance.OAuthSettings.RedirectUrl),
-               accessTokenUrl: new Uri(App.Instance.OAuthSettings.AccessToken),
-               getUsernameAsync: null);
-
-                auth.Error += (object sender, AuthenticatorErrorEventArgs eventArgs) => {
-                    auth.ShowUIErrors = false;
-                    auth.AllowCancel = true;
-                };
-
-                auth.BrowsingCompleted += (sender, eventargs) =>
+                if (eventArgs.IsAuthenticated && auth.HasCompleted)
                 {
-                    var s = eventargs;
-                };
-
-                auth.Completed += (sender, eventArgs) =>
+                    App.Instance.SuccessfulLoginAction.Invoke();
+                    App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
+                    IsShown = true;
+                    return;                   
+                }
+                else
                 {
-                    if (eventArgs.IsAuthenticated)
-                    {
-                        App.Instance.SuccessfulLoginAction.Invoke();
-                        App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
+                    System.Diagnostics.Debug.Write("Fail");
+                }
+            };
 
-                        DismissViewController(true, null);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.Write("Fail");
-                    }
-                };
+            if (!IsShown)
+                PresentViewController(auth.GetUI(), false, new Action(() => finalisedAction()));
+        }
 
-                PresentViewController(auth.GetUI(), false, null);
-            }
+        private void Auth_Error(object sender, AuthenticatorErrorEventArgs e)
+        {
+            System.Diagnostics.Debug.Write("Fail");
+        }
+
+        public void finalisedAction()
+        {
+            System.Diagnostics.Debug.Write("Fail");
         }
     }
 }

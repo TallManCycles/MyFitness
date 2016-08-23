@@ -32,12 +32,8 @@ namespace OAuthTwoDemo.XForms.Android
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated)
                 {
-                    App.Instance.SuccessfulLoginAction.Invoke();
-                    App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
-                }
-                else
-                {
-                    //;
+                    ((App)App.Current).SuccessfulLoginAction.Invoke();
+                    ((App)App.Current).SaveToken(eventArgs.Account.Properties["access_token"]);
                 }
             };
 
