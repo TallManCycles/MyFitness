@@ -15,7 +15,21 @@ namespace MyFitness
     {
         public App()
         {
-            MainPage = GetMainPage();
+            if (IsAuthenticated)
+            {
+                MainPage = new NavigationPage(new MainPage(this));
+            }
+            else
+            {
+                if (!Settings.HasCompletedInitialSetup)
+                {
+                    MainPage = new InitialSetup(this);
+                }
+                else
+                {
+                    MainPage = new LoginModalPage(this);
+                }
+            }
         }
 
         static volatile App _Instance;
@@ -49,32 +63,6 @@ namespace MyFitness
 
         public Auth OAuthSettings { get; private set; }
 
-        NavigationPage _NavPage;
-
-        public Page GetMainPage()
-        {
-            if (IsAuthenticated)
-            {
-                if (Settings.HasCompletedInitialSetup)
-                {
-                    _NavPage = new NavigationPage(new MainPage());
-                }
-            }
-            else
-            {
-                if (Settings.HasCompletedInitialSetup)
-                {
-                    _NavPage = new NavigationPage(new LoginPage());
-                }
-                else
-                {
-                    _NavPage = new NavigationPage(new InitialSetup(this)); 
-                }
-            }
-
-            return _NavPage;
-        }
-
         public bool IsAuthenticated
         {
             get { return !string.IsNullOrWhiteSpace(Settings.AccessToken); }
@@ -87,15 +75,21 @@ namespace MyFitness
 
         public void SaveToken(string token)
         {
-            Settings.AccessToken = token;
-            MainPage = GetMainPage();
+            if (!string.IsNullOrEmpty(token))
+            {
+                Settings.AccessToken = token;
+            }       
+        }
+
+        public void ShowMainPage()
+        {
+            MainPage = new NavigationPage(new MainPage(this));
         }
 
         public void Logout()
         {
             Settings.AccessToken = "";
-            _NavPage.Navigation.PopModalAsync();
-            MainPage = GetMainPage();
+            MainPage = new LoginModalPage(this);
         }
 
         public void Initialize()
@@ -107,7 +101,7 @@ namespace MyFitness
         {
             get
             {
-                return new Action(() => _NavPage.Navigation.PopModalAsync());
+                return new Action(() => ((App)App.Current).ShowMainPage());
             }
         }
     }

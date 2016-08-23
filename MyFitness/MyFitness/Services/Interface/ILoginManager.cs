@@ -11,8 +11,8 @@ namespace MyFitness.Services
 {
     public interface ILoginManager
     {
-        void Logout();
+        void ShowMainPage(); 
 
-        void Initialize();
+        void Logout();
     }
 }

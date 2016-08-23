@@ -68,7 +68,7 @@ namespace MyFitness.Pages
                     var metersPerMin = hourTime / 60.00;
                     Settings.SwimThresholdPace = metersPerMin;
                     Settings.HasCompletedInitialSetup = true;
-                    App.Instance.Logout();
+                    _loginManager.Logout();
                 }
                 else
                 {

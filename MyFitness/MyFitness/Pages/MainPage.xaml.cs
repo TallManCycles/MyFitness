@@ -25,14 +25,16 @@ namespace MyFitness.Pages
         SfCircularGauge fitnessguague;
         SfCircularGauge fatigueguage;
         SfCircularGauge formguague;
+        private ILoginManager _loginManager;
 
-        public MainPage()
-        {
-            InitializeComponent();
+        public MainPage(ILoginManager loginManager)
+        {            
             _webService = new ActivityService();
             _sql = new Sql();
             _fitness = new Fitness();
+            _loginManager = loginManager;
 
+            InitializeComponent();
         }
 
         protected override async void OnAppearing()
@@ -129,9 +131,7 @@ namespace MyFitness.Pages
                     break;
                 default:
                     break;
-            }
-
-            
+            }           
 
             List<Pointer> pointers = new List<Pointer>();
             NeedlePointer needlePointer = new NeedlePointer();
