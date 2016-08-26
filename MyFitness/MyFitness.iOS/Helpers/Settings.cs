@@ -17,6 +17,7 @@ namespace MyFitness.iOS.Helpers
       get
       {
         return CrossSettings.Current;
+ 
       }
     }
 

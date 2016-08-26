@@ -64,15 +64,15 @@ namespace MyFitness.Helpers
             }
         }
 
-        public static string InitialCalculationDate
+        public static string LastCalculationDate
         {
             get
             {
-                return AppSettings.GetValueOrDefault<string>("InitialCalculationDate", string.Empty);
+                return AppSettings.GetValueOrDefault<string>("LastCalculationDate", string.Empty);
             }
             set
             {
-                AppSettings.AddOrUpdateValue<string>("InitialCalculationDate", value);
+                AppSettings.AddOrUpdateValue<string>("LastCalculationDate", value);
             }
         }
 

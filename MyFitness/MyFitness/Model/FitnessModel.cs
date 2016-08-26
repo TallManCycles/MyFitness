@@ -9,7 +9,7 @@ namespace MyFitness.Model
 {
     public class FitnessModel
     {
-        [SQLite.PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
         public DateTime Date { get; set; }
