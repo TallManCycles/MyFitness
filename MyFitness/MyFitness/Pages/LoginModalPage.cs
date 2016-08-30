@@ -12,7 +12,7 @@ namespace MyFitness.Pages
 {
     public class LoginModalPage : CarouselPage
     {
-        ContentPage login, setup;
+        ContentPage login, setup, mainPage;
         private ILoginManager _loginManager;
 
         public LoginModalPage(ILoginManager loginManager)

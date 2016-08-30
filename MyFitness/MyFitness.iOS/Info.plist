@@ -10,7 +10,6 @@
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
-		<integer>2</integer>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -38,7 +37,7 @@
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleShortVersionString</key>
-	<string></string>
+	<string>1</string>
 	<key>XSAppIconAssets</key>
 	<string>Resources/TestIcon.xcassets/AppIcons.appiconset</string>
 </dict>

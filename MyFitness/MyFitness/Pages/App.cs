@@ -13,6 +13,8 @@ namespace MyFitness
 {
     public class App : Application, ILoginManager
     {
+        #region Constructors
+
         public App()
         {
             if (IsAuthenticated)
@@ -32,8 +34,14 @@ namespace MyFitness
             }
         }
 
+        #endregion
+
+        #region Properties
+
         static volatile App _Instance;
+
         static object _SyncRoot = new Object();
+
         public static App Instance
         {
             get
@@ -73,6 +81,9 @@ namespace MyFitness
             get { return Helpers.Settings.AccessToken; }
         }
 
+        #endregion
+
+        #region Methods
         public void SaveToken(string token)
         {
             if (!string.IsNullOrEmpty(token))
@@ -83,7 +94,7 @@ namespace MyFitness
 
         public void ShowMainPage()
         {
-            MainPage = new Main(this);
+            MainPage = new LoginModalPage(this);
         }
 
         public void Logout()
@@ -105,5 +116,7 @@ namespace MyFitness
                 return action;
             }
         }
+
+        #endregion
     }
 }

@@ -4,16 +4,16 @@
              x:Class="MyFitness.Pages.MainPage">
   <ScrollView>
   <StackLayout x:Name="MainLayout" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Padding="10">
-    <Label x:Name="AthleteName" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label x:Name="AthleteName" FontSize="30" HorizontalOptions="CenterAndExpand" />
     
     <Label Text="Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
 
     <Label Text="Fatigue" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Fatigue, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Fatigue, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
 
     <Label Text="Overall Form" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    <Label Text="{Binding Form, StringFormat='{0: 0.0}'}" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+    <Label Text="{Binding Form, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
        
     <Button Text="Refresh" FontSize="Large" Clicked="Refresh" />
   </StackLayout>

@@ -1,6 +1,7 @@
 ﻿using MyFitness.Calculations;
 using MyFitness.Data;
 using MyFitness.Model;
+using Syncfusion.RangeNavigator.XForms;
 using Syncfusion.SfChart.XForms;
 using Syncfusion.SfGauge.XForms;
 using System;
@@ -37,12 +38,21 @@ namespace MyFitness.Pages
             fatigueguage = CreateGuague("Fatigue", (double)model.Fatigue, 0, 50, 10, FitnessType.fatigue);
             formguague = CreateGuague("Form", (double)model.Form, -25, 25, 10, FitnessType.form);
 
-            var chart = CreateChart("Hello");
+            var now = DateTime.Now;
 
-            MainLayout.Children.Add(fitnessguague);
-            MainLayout.Children.Add(fatigueguage);
-            MainLayout.Children.Add(formguague);
-            MainLayout.Children.Add(chart);
+            var lseven = new Label() { Text = "Past 7 Days" };
+            var sevenDayChart = CreateLineChart(DateTime.Now.AddDays(-7), now);
+            var lfourteen = new Label() { Text = "Past 14 Days" };
+            var fourteenDayChart = CreateLineChart(DateTime.Now.AddDays(-14), now);
+            var lmonth = new Label() { Text = "Last Month" };
+            var fourtyTwoDayChart = CreateLineChart(DateTime.Now.AddDays(-42), now);
+
+            MainLayout.Children.Add(lseven);
+            MainLayout.Children.Add(sevenDayChart);
+            MainLayout.Children.Add(lfourteen);
+            MainLayout.Children.Add(fourteenDayChart);
+            MainLayout.Children.Add(lmonth);
+            MainLayout.Children.Add(fourtyTwoDayChart);
             base.OnAppearing();
         }
 
@@ -132,40 +142,26 @@ namespace MyFitness.Pages
             return guage;
         }
 
-        private SfChart CreateChart(string title)
+        private SfDateTimeRangeNavigator CreateLineChart(DateTime fromDate, DateTime toDate)
         {
-            SfChart chart = new SfChart();
+            SfDateTimeRangeNavigator rangeNavigator = new SfDateTimeRangeNavigator();
 
-            //Initializing Primary Axis
-            CategoryAxis primaryAxis = new CategoryAxis();
-            primaryAxis.Title = new ChartAxisTitle()
-            {
-                Text = "Fittness"
-            };
-            chart.PrimaryAxis = primaryAxis;
+            rangeNavigator.HeightRequest = 200;
 
-            //Initializing Secondary Axis
-            NumericalAxis secondaryAxis = new NumericalAxis();
-            secondaryAxis.Title = new ChartAxisTitle()
-            {
-                Text = "Date"
-            };
-            chart.SecondaryAxis = secondaryAxis;
+            rangeNavigator.Minimum = fromDate;
+            rangeNavigator.Maximum = toDate;
+            rangeNavigator.ViewRangeStart = fromDate;
+            rangeNavigator.ViewRangeEnd = toDate;
 
-            chart.Title = new ChartTitle()
-            {
-                Text = title
-            };
+            rangeNavigator.EnableTooltip = false;
 
-            var d = new DataModel();
+            var data = new DataModel(fromDate, toDate);
+            rangeNavigator.ItemsSource = data.Data;
+            rangeNavigator.XBindingPath = "Date";
+            rangeNavigator.YBindingPath = "Value";
 
-            chart.Series.Add(new ColumnSeries()
-            {
-                ItemsSource = d.Data
-            });
-
-            return chart;
-        }
+            return rangeNavigator;
+    }
 
         private enum FitnessType
         {
@@ -179,17 +175,33 @@ namespace MyFitness.Pages
     {
         private Sql _sql;
 
-        public ObservableCollection<ChartDataPoint> Data { get; set; }
+        public ObservableCollection<Model> Data { get; set; }
 
-        public DataModel()
+        public DataModel(DateTime fromdate, DateTime toDate)
         {
             _sql = new Sql();
 
-            Data = new ObservableCollection<ChartDataPoint>();
-            foreach (ActivityModel a in _sql.GetActivities())
+            var items = _sql.GetFitnessRange(fromdate, toDate);
+
+            Data = new ObservableCollection<Model>();
+
+            foreach (FitnessModel a in items)
             {
-                Data.Add(new ChartDataPoint(a.Date.ToString("dd"), (double)a.TSS));
+                Data.Add(new Model(a.Date, (double)a.Fitness));
             }
+        }
+    }
+
+    public class Model
+    {
+        public DateTime Date { get; set; }
+
+        public double Value { get; set; }
+
+        public Model(DateTime dateTime, double value)
+        {
+            Date = dateTime;
+            Value = value;
         }
     }
 }

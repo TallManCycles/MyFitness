@@ -94,32 +94,63 @@ namespace MyFitness.Calculations
             decimal CurrentTSS = (decimal)0.00;
 
             List<Activity> activities = await _activityService.GetAthleteActivities(Settings.AccessToken);
+     
+            IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date > DateTime.Parse(Settings.LastCalculationDate).Date);
 
-            IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date == DateTime.Now.Date);
+            DateTime date = DateTime.MinValue;
 
-            foreach (Activity ad in dayActivity)
-            {
-                if (ad.SufferScore.HasValue)
-                    CurrentTSS += ad.SufferScore.Value;
-
-                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
-            }
+            FitnessModel model = new FitnessModel();
 
             previousDay.Fitness = Settings.CTL;
             previousDay.Fatigue = Settings.ATL;
             previousDay.Form = Settings.TSB;
             previousDay.Date = DateTime.Now.AddDays(-1);
 
-            FitnessModel model = new FitnessModel();
+            var dayActivitySorted = dayActivity.OrderByDescending(x => x.StartDate);
+
+            foreach (Activity ad in dayActivitySorted)
+            {
+                if (ad.SufferScore.HasValue)
+                    CurrentTSS += ad.SufferScore.Value;
+
+                if (date == DateTime.MinValue)
+                {
+                    date = DateTime.Parse(ad.StartDate);
+
+                    model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
+                    model.Form = model.Fitness - previousDay.Fatigue;
+                    model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
+                    model.Date = DateTime.Parse(ad.StartDate);
+
+                    _sql.SaveFitness(model);
+                }
+                else
+                {
+                    if (date.Date != DateTime.Parse(ad.StartDate).Date)
+                    {
+                        model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
+                        model.Form = model.Fitness - previousDay.Fatigue;
+                        model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
+                        model.Date = DateTime.Parse(ad.StartDate);
+
+                        _sql.SaveFitness(model);
+                    }
+                }
+
+                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
+            }
+
+            
 
             if (previousDay != null)
             {
                 model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
                 model.Form = model.Fitness - previousDay.Fatigue;
-                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
-                
+                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));                
                 model.Date = DateTime.Now.Date;
-                model.Id = previousDay.Id + 1;
+                _sql.SaveFitness(model);
+
+                Settings.LastCalculationDate = DateTime.Now.ToString();
 
                 return model;
             }

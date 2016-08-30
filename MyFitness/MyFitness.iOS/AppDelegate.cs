@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using HockeyApp.iOS;
 
 namespace MyFitness.iOS
 {
@@ -22,6 +23,12 @@ namespace MyFitness.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            new Syncfusion.SfChart.XForms.iOS.Renderers.SfChartRenderer();
+
+            var manager = BITHockeyManager.SharedHockeyManager;
+            manager.Configure("379717");
+            manager.StartManager();
+
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 

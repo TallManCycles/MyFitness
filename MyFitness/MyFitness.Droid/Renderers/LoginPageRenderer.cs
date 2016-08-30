@@ -6,6 +6,7 @@ using MyFitness.Pages;
 using MyFitness;
 using Xamarin.Forms.Platform.Android;
 using OAuthTwoDemo.XForms.Android;
+using Xamarin.Forms.Platform;
 
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 
@@ -20,7 +21,7 @@ namespace OAuthTwoDemo.XForms.Android
             // this is a ViewGroup - so should be able to load an AXML file and FindView<>
             var activity = this.Context as Activity;
 
-           var auth = new OAuth2Authenticator(
+            var auth = new OAuth2Authenticator(
                clientId: App.Instance.OAuthSettings.ClientId,
                clientSecret: App.Instance.OAuthSettings.ClientSecret,
                authorizeUrl: new Uri(App.Instance.OAuthSettings.AuthorizeUrl), 
@@ -32,8 +33,9 @@ namespace OAuthTwoDemo.XForms.Android
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated)
                 {
-                    ((App)App.Current).SuccessfulLoginAction.Invoke();
-                    ((App)App.Current).SaveToken(eventArgs.Account.Properties["access_token"]);
+                    App.Instance.SuccessfulLoginAction.Invoke();
+                    App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
+                    MessagingCenter.Send<MasterDetailPage>(this, "Complete");
                 }
             };
 
