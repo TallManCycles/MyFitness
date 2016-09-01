@@ -1,4 +1,5 @@
-﻿using MyFitness.Services;
+﻿using MyFitness.Helpers;
+using MyFitness.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +36,14 @@ namespace MyFitness.Pages
                 }
                 else
                 {
-                    Detail = new NavigationPage((Page)Activator.CreateInstance(item.TargetType));
-                    masterPage.ListView.SelectedItem = null;
-                    IsPresented = false;
-                }                
+                    Detail = new NavigationPage((Page)Activator.CreateInstance(item.TargetType))
+                    {
+                        BarBackgroundColor = Color.FromHex(Settings.BackgroundColor),
+                        BarTextColor = Color.FromHex(Settings.FontColor)
+                    };
+                };
+                masterPage.ListView.SelectedItem = null;
+                IsPresented = false;
             }
         }
     }

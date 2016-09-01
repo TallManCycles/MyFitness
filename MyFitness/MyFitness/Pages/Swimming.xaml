@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyFitness.Pages.Swimming">
+  <StackLayout
+      HorizontalOptions="CenterAndExpand"
+      VerticalOptions="CenterAndExpand"
+      Padding="20" Spacing="20">
+    <StackLayout Orientation="Horizontal">
+      <Label
+            x:Name="SwimPrompt"
+            Text="Would you like to include swimming?"
+            FontSize="Large"
+            HorizontalOptions="CenterAndExpand"/>
+      <Switch x:Name="SwimSwitch"
+            Toggled="SwimToggle"
+            HorizontalOptions="CenterAndExpand"/>
+    </StackLayout>
+    <Label x:Name="SwimLabel"
+            IsEnabled="False"
+            Text="What is your current fastest pace for a 1500m Swim?"
+            HorizontalOptions="CenterAndExpand"
+            VerticalOptions="CenterAndExpand"/>
+    <Picker x:Name="SwimTimes"
+            IsEnabled="False"
+            Title="Select Your Fastest Time"
+            SelectedIndex="0"
+            HorizontalOptions="CenterAndExpand"
+            VerticalOptions="CenterAndExpand"/>
+    <Button Text="Save" Clicked="OnSave"/>
+  </StackLayout>
+</ContentPage>

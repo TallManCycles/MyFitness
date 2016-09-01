@@ -2,6 +2,7 @@
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 using System;
+using Xamarin.Forms;
 
 namespace MyFitness.Helpers
 {
@@ -147,7 +148,28 @@ namespace MyFitness.Helpers
             }
         }
 
+        public static string BackgroundColor
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<string>("BackgroundColor", "BEDEE8");
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<string>("BackgroundColor", value);
+            }
+        }
 
-
+        public static string FontColor
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<string>("FontColor", "251D57");
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<string>("FontColor", value);
+            }
+        }
     }
 }

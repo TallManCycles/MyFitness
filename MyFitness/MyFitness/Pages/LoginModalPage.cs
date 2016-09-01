@@ -12,7 +12,7 @@ namespace MyFitness.Pages
 {
     public class LoginModalPage : CarouselPage
     {
-        ContentPage login, setup, mainPage;
+        ContentPage login;
         private ILoginManager _loginManager;
 
         public LoginModalPage(ILoginManager loginManager)
@@ -21,19 +21,11 @@ namespace MyFitness.Pages
 
             login = new LoginPage();
 
-            setup = new InitialSetup(_loginManager);
-
             this.Children.Add(login);
-            this.Children.Add(setup);
 
             MessagingCenter.Subscribe<ContentPage>(this, "Login", (sender) =>
             {
                 this.SelectedItem = login;
-            });
-
-            MessagingCenter.Subscribe<ContentPage>(this, "Setup", (sender) =>
-            {
-                this.SelectedItem = setup;
             });
         }
     }

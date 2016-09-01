@@ -1,5 +1,4 @@
 ﻿using MyFitness.Helpers;
-using MyFitness.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +9,20 @@ using Xamarin.Forms;
 
 namespace MyFitness.Pages
 {
-    public partial class InitialSetup : ContentPage
+    public partial class Swimming : ContentPage
     {
         private List<int> pickerDataSource;
-        private ILoginManager _loginManager;
 
-        public InitialSetup(ILoginManager loginManager)
+        public Swimming()
         {
             InitializeComponent();
-            _loginManager = loginManager;
+
+            Color backgroundColor = Color.FromHex(Settings.BackgroundColor);
+            Color fontColor = Color.FromHex(Settings.FontColor);
+
+            this.BackgroundColor = backgroundColor;
+            SwimLabel.TextColor = fontColor;
+            SwimPrompt.TextColor = fontColor;
         }
 
         protected override void OnAppearing()
@@ -36,17 +40,11 @@ namespace MyFitness.Pages
         public void SwimToggle(object sender, EventArgs e)
         {
             SwimTimes.IsEnabled = true;
-            SwimLabel.IsEnabled = true;                      
+            SwimLabel.IsEnabled = true;
         }
 
         public async void OnSave(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(FirstName.Text))
-            {
-                await DisplayAlert("Warning", "Please enter a first name", "OK");
-                return;
-            }
-
             if (SwimSwitch.IsToggled)
             {
                 int? value = null;
@@ -59,7 +57,7 @@ namespace MyFitness.Pages
                 {
                     await DisplayAlert("Warning", "Please select a valid time", "OK");
                 }
-                
+
 
                 if (value.HasValue)
                 {
@@ -67,8 +65,8 @@ namespace MyFitness.Pages
                     var hourTime = timeVar - (timeVar * 0.025);
                     var metersPerMin = hourTime / 60.00;
                     Settings.SwimThresholdPace = metersPerMin;
-                    Settings.HasCompletedInitialSetup = true;
-                    _loginManager.Logout();
+
+                    MessagingCenter.Send<ContentPage>(this, "Running");
                 }
                 else
                 {
@@ -77,8 +75,7 @@ namespace MyFitness.Pages
             }
             else
             {
-                Settings.HasCompletedInitialSetup = true;
-                _loginManager.Logout();
+                MessagingCenter.Send<ContentPage>(this, "Running");
             }
         }
     }

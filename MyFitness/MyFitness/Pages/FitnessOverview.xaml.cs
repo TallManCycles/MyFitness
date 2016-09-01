@@ -1,5 +1,6 @@
 ﻿using MyFitness.Calculations;
 using MyFitness.Data;
+using MyFitness.Helpers;
 using MyFitness.Model;
 using Syncfusion.RangeNavigator.XForms;
 using Syncfusion.SfChart.XForms;
@@ -28,6 +29,21 @@ namespace MyFitness.Pages
         {
             _fitness = new Fitness();
             InitializeComponent();
+            SetColours();
+        }
+
+        private void SetColours()
+        {
+            this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
+
+            foreach (View v in MainLayout.Children)
+            {
+                if (v.GetType() == typeof(Label))
+                {
+                    Label l = (Label)v;
+                    l.TextColor = Color.FromHex(Settings.FontColor);
+                }
+            }
         }
 
         protected async override void OnAppearing()

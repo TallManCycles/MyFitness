@@ -27,23 +27,17 @@ namespace MyFitness.Services
         {
             var activities = new List<Activity>();
 
+            string url = "https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=";
+
             FitnessResponse response = await _webService.ReceiveRequest(
-                "https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=" 
+                url
                 + authenticationToken 
                 + "&after=" 
                 + ConvertToUnixTimestamp(DateTime.Now.AddDays(-42)));
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {
-                try
-                {
-                    activities = JsonConvert.DeserializeObject<List<Activity>>(response.Content);
-                    return activities;
-                }
-                catch (Exception ex)
-                {
-                    return activities;
-                }
+                return JsonConvert.DeserializeObject<List<Activity>>(response.Content);
             }
             else
             {
@@ -53,10 +47,12 @@ namespace MyFitness.Services
 
         public async Task<MyFitness.Model.Strava.Stream[]> GetActivityStream(int activityId, StreamType type)
         {
-            Stream[] s = new Stream[] { new Stream() };          
+            Stream[] s = new Stream[] { new Stream() };
+
+            string url = "https://www.strava.com/api/v3/activities/";
 
             FitnessResponse response = await _webService.ReceiveRequest(
-                "https://www.strava.com/api/v3/activities/"
+                url
                 + activityId + "/streams/"
                 + Enum.GetName(typeof(StreamType), type)
                 + "?access_token="
@@ -64,15 +60,7 @@ namespace MyFitness.Services
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {
-                try
-                {
-                    s = JsonConvert.DeserializeObject<Stream[]>(response.Content);
-                    return s;
-                }
-                catch (Exception ex)
-                {
-                    return s;
-                }
+                return JsonConvert.DeserializeObject<Stream[]>(response.Content);
             }
             else
             {
@@ -85,21 +73,14 @@ namespace MyFitness.Services
         {
             var zones = new ActivityZones();
 
-            FitnessResponse response = await _webService.ReceiveRequest(
-                "https://www.strava.com/api/v3/athlete/zones?access_token="
+            string url = "https://www.strava.com/api/v3/athlete/zones?access_token=";
+
+            FitnessResponse response = await _webService.ReceiveRequest(url               
                 + Settings.AccessToken);
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {
-                try
-                {
-                    zones = JsonConvert.DeserializeObject<ActivityZones>(response.Content);
-                    return zones;
-                }
-                catch (Exception ex)
-                {
-                    return zones;
-                }
+                return JsonConvert.DeserializeObject<ActivityZones>(response.Content);
             }
             else
             {
@@ -112,19 +93,13 @@ namespace MyFitness.Services
         {
             var athlete = new Athlete();
 
-            FitnessResponse response = await _webService.ReceiveRequest("https://www.strava.com/api/v3/athlete?access_token=" + Settings.AccessToken);
+            string url = "https://www.strava.com/api/v3/athlete?access_token=";
+
+            FitnessResponse response = await _webService.ReceiveRequest(url + Settings.AccessToken);
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {
-                try
-                {
-                    athlete = JsonConvert.DeserializeObject<Athlete>(response.Content);
-                    return athlete;
-                }
-                catch (Exception ex)
-                {
-                    return athlete;
-                }
+                return JsonConvert.DeserializeObject<Athlete>(response.Content);
             }
             else
             {

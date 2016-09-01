@@ -25,11 +25,11 @@ namespace MyFitness
             {
                 if (!Settings.HasCompletedInitialSetup)
                 {
-                    MainPage = new InitialSetup(this);
+                    MainPage = new Setup(this);
                 }
                 else
                 {
-                    MainPage = new LoginModalPage(this);
+                    Logout();
                 }
             }
         }
@@ -74,6 +74,7 @@ namespace MyFitness
         public bool IsAuthenticated
         {
             get { return !string.IsNullOrWhiteSpace(Settings.AccessToken); }
+            set { Settings.AccessToken = null; }
         }
 
         public string Token
@@ -100,21 +101,27 @@ namespace MyFitness
         public void Logout()
         {
             Settings.AccessToken = "";
-            MainPage = new LoginModalPage(this);
+            MainPage = new Main(this);
+            MainPage.Navigation.PushModalAsync(new LoginPage());
         }
 
-        public void Initialize()
+        public void ReturnFromLogin()
         {
-            MainPage = new NavigationPage(new InitialSetup(DependencyService.Get<ILoginManager>()));
+            MainPage = new Main(this);
         }
 
         public Action SuccessfulLoginAction
         {
             get
             {
-                var action = new Action(this.ShowMainPage);
-                return action;
+                return new Action(ReturnFromLogin);
             }
+        }
+
+        public void SetupColors()
+        {
+            Settings.BackgroundColor = "BEDEE8";
+            Settings.FontColor = "251D57";
         }
 
         #endregion

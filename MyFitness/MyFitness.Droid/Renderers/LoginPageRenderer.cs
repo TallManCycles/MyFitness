@@ -5,12 +5,13 @@ using Xamarin.Forms;
 using MyFitness.Pages;
 using MyFitness;
 using Xamarin.Forms.Platform.Android;
-using OAuthTwoDemo.XForms.Android;
 using Xamarin.Forms.Platform;
+using MyFitness.Droid;
+using MyFitness.Services;
 
 [assembly: ExportRenderer(typeof(LoginPage), typeof(LoginPageRenderer))]
 
-namespace OAuthTwoDemo.XForms.Android
+namespace MyFitness.Droid
 {
     public class LoginPageRenderer : PageRenderer
     {
@@ -33,9 +34,9 @@ namespace OAuthTwoDemo.XForms.Android
             auth.Completed += (sender, eventArgs) => {
                 if (eventArgs.IsAuthenticated)
                 {
-                    App.Instance.SuccessfulLoginAction.Invoke();
                     App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
-                    MessagingCenter.Send<MasterDetailPage>(this, "Complete");
+                    App.Instance.SuccessfulLoginAction.Invoke();
+                    MessagingCenter.Send<ContentPage>(new ContentPage(), "Login");
                 }
             };
 
