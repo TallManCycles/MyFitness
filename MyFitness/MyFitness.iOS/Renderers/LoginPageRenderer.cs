@@ -13,8 +13,6 @@ namespace MyFitness.iOS.Renderers
 {
     public class LoginPageRenderer : PageRenderer
     {
-        bool IsShown = false;
-
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
@@ -32,33 +30,17 @@ namespace MyFitness.iOS.Renderers
 
             auth.Completed += (sender, eventArgs) =>
             {
-                DismissViewController(true, null);
+                //DismissViewController(true, null);
 
                 if (eventArgs.IsAuthenticated && auth.HasCompleted)
                 {
-                    App.Instance.SuccessfulLoginAction.Invoke();
                     App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);
-                    IsShown = true;
-                    return;                   
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Write("Fail");
+                    App.Instance.SuccessfulLoginAction.Invoke();
+                    MessagingCenter.Send<ContentPage>(new ContentPage(), "Login");                  
                 }
             };
 
-            if (!IsShown)
-                PresentViewController(auth.GetUI(), false, new Action(() => finalisedAction()));
-        }
-
-        private void Auth_Error(object sender, AuthenticatorErrorEventArgs e)
-        {
-            System.Diagnostics.Debug.Write("Fail");
-        }
-
-        public void finalisedAction()
-        {
-            System.Diagnostics.Debug.Write("Fail");
+            PresentViewController(auth.GetUI(), false, null);
         }
     }
 }

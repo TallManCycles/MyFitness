@@ -4,7 +4,7 @@
              x:Class="MyFitness.Pages.FitnessOverview">
   <Label Text="{Binding MainText}" VerticalOptions="Center" HorizontalOptions="Center" />
   <ScrollView>    
-    <StackLayout x:Name="MainLayout">
+    <StackLayout x:Name="MainLayout" Spacing="20">
     </StackLayout>
   </ScrollView>    
 </ContentPage>

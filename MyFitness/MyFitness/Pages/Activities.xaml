@@ -6,18 +6,15 @@
   <ScrollView>
     <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
       <Label Text="Activities" FontSize="Large" HorizontalOptions="CenterAndExpand"/>
-      <ListView x:Name="ActivityView" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" ItemSelected="SelectedCell">
-        <ListView.ItemTemplate>
+      <ListView x:Name="ActivityView" 
+                HorizontalOptions="FillAndExpand"                 
+                VerticalOptions="FillAndExpand" 
+                ItemSelected="SelectedCell" BackgroundColor="Transparent">
+        <ListView.ItemTemplate HorizontalOptions="CenterAndExpand">
           <DataTemplate>
-            <ViewCell>
-              <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <Label Text="{Binding ActivityName}" FontSize="Small" HorizontalTextAlignment="Center"/>
-                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                  <Label Text="{Binding TSS, StringFormat='Suffer Score: {0}'}" FontSize="Small"/>
-                  <Label Text="{Binding Date, StringFormat='{0: dddd dd MMMM}'}" FontSize="Small"/>
-                </StackLayout>
-              </StackLayout>
-            </ViewCell>                    
+            <TextCell x:Name="NewTextCell"
+                      Text="{Binding ActivityName}"
+                      Detail="{Binding SufferScore, StringFormat='Suffer Score: {0}'}"/>                  
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>

@@ -17,6 +17,6 @@
             SelectedIndex="0"
             HorizontalOptions="CenterAndExpand"
             VerticalOptions="CenterAndExpand"></Picker>
-    <Button x:Name="SaveButton" Text="Save" Clicked="OnSave" HorizontalOptions="FillAndExpand"/>
+    <Button x:Name="SaveButton" Text="Continue" Clicked="OnSave" HorizontalOptions="FillAndExpand"/>
   </StackLayout>
 </ContentPage>

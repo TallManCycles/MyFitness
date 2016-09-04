@@ -1,4 +1,7 @@
-﻿using MyFitness.Services;
+﻿using MyFitness.Calculations;
+using MyFitness.Data;
+using MyFitness.Helpers;
+using MyFitness.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +22,8 @@ namespace MyFitness.Pages
         {
             _loginManager = loginManager;
             InitializeComponent();
+
+            this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
 
             this.Title = "Main Page";
 
@@ -44,6 +49,10 @@ namespace MyFitness.Pages
             });
 
             listView.ItemsSource = masterPageItems;
+
+            var i = listView.ItemTemplate;
+
+            i.SetValue(TextCell.TextColorProperty, Color.FromHex(Settings.FontColor));
         }
     }
 

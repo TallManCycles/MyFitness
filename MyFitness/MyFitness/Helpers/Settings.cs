@@ -148,6 +148,18 @@ namespace MyFitness.Helpers
             }
         }
 
+        public static double RunThresholdPace
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault<double>("RunThresholdPace", 0.00);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue<double>("RunThresholdPace", value);
+            }
+        }
+
         public static string BackgroundColor
         {
             get

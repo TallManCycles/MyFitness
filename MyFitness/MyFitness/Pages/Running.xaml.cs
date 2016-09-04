@@ -58,10 +58,10 @@ namespace MyFitness.Pages
 
             if (value.HasValue)
             {
-                var timeVar = ((30.00 / value.Value) * 1500.00) * 2;
+                var timeVar = ((30.00 / value.Value) * 10000.00) * 2;
                 var hourTime = timeVar - (timeVar * 0.025);
                 var metersPerMin = hourTime / 60.00;
-                Settings.SwimThresholdPace = metersPerMin;
+                Settings.RunThresholdPace = metersPerMin;
                 Settings.HasCompletedInitialSetup = true;
                 _loginManager.Logout();
             }

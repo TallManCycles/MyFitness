@@ -32,6 +32,7 @@ namespace MyFitness.Droid
                getUsernameAsync: null); 
 
             auth.Completed += (sender, eventArgs) => {
+
                 if (eventArgs.IsAuthenticated)
                 {
                     App.Instance.SaveToken(eventArgs.Account.Properties["access_token"]);

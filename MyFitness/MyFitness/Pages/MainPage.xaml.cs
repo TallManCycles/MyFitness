@@ -20,15 +20,20 @@ namespace MyFitness.Pages
     public partial class MainPage : ContentPage
     {
         private Fitness _fitness;
-        private Sql _sql;
-        private ActivityService _webService;
+        private Sql _sqlService;
+        private ActivityService _activityService;
         private FitnessModel model;
 
-
-        public MainPage()
-        {            
-            _webService = new ActivityService();
-            _sql = new Sql();
+        /// <summary>
+        /// Instantiates a new MainPage.
+        /// </summary>
+        /// <param name="activityService">The activityService.</param>
+        /// <param name="sqlService">The SqlService.</param>
+        /// <param name="fitnessService">The fitnessSerivice.</param>
+        public MainPage(ActivityService activityService, Sql sqlService)
+        {
+            _activityService = activityService;
+            _sqlService = sqlService;
             _fitness = new Fitness();
             InitializeComponent();
             model = new FitnessModel();
@@ -40,21 +45,23 @@ namespace MyFitness.Pages
         {
             this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
 
-            foreach (View v in MainLayout.Children)
-            {
-                if (v.GetType() == typeof(Label))
-                {
-                    Label l = (Label)v;
-                    l.TextColor = Color.FromHex(Settings.FontColor);
-                }
+            Color textColor = Color.FromHex(Settings.FontColor);
 
-                if (v.GetType() == typeof(Button))
-                {
-                    Button b = (Button)v;
-                    b.BackgroundColor = Color.FromHex(Settings.FontColor);
-                    b.TextColor = Color.FromHex(Settings.BackgroundColor);
-                }
-            }
+            AthleteName.TextColor = textColor;
+            FitnessLabel.TextColor = textColor;
+            FitnessValue.TextColor = textColor;
+            FatigueLabel.TextColor = textColor;
+            FatigueValue.TextColor = textColor;
+            FormLabel.TextColor = textColor;
+            FormValue.TextColor = textColor;
+            LastSevenDaysLabel.TextColor = textColor;
+            LastSevenDays.TextColor = textColor;
+            LastFourteenDays.TextColor = textColor;
+            LastFourteenDaysLabel.TextColor = textColor;
+            LastTwentyEightDays.TextColor = textColor;
+            LastTwentyEightDaysLabel.TextColor = textColor;
+            RefreshButton.BackgroundColor = Color.FromHex(Settings.FontColor);
+            RefreshButton.TextColor = Color.FromHex(Settings.BackgroundColor);
         }
 
         protected override async void OnAppearing()
@@ -64,8 +71,9 @@ namespace MyFitness.Pages
             if (!string.IsNullOrEmpty(Settings.AccessToken))
             {
                 model = await _fitness.GetCurrentFitness();
-                var athlete = await _webService.GetAthlete();
+                var athlete = await _activityService.GetAthlete();
                 AthleteName.Text = athlete.FirstName;
+                GetImprovement();
             }           
 
             MainLayout.BindingContext = model;
@@ -76,9 +84,16 @@ namespace MyFitness.Pages
         private async void Refresh(object sender, EventArgs e)
         {
             model = await _fitness.GetCurrentFitness();
-            var athlete = await _webService.GetAthlete();
+            var athlete = await _activityService.GetAthlete();
             AthleteName.Text = athlete.FirstName;
             MainLayout.BindingContext = model;
+        }
+
+        private void GetImprovement()
+        {
+            LastSevenDays.Text = _fitness.GetImprovement(7).ToString("+#;-#;0");
+            LastFourteenDays.Text = _fitness.GetImprovement(14).ToString("+#;-#;0");
+            LastTwentyEightDays.Text = _fitness.GetImprovement(28).ToString("+#;-#;0");
         }
     }
 }

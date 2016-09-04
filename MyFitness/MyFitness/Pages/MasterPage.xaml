@@ -4,14 +4,10 @@
              x:Class="MyFitness.Pages.MasterPage">
   <ContentPage.Content>
     <StackLayout VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-      <ListView x:Name="listView" VerticalOptions="FillAndExpand" SeparatorVisibility="None">
+      <ListView x:Name="listView" VerticalOptions="FillAndExpand" SeparatorVisibility="None" BackgroundColor="Transparent">
         <ListView.ItemTemplate>
           <DataTemplate>
-            <ViewCell >
-              <StackLayout>
-                <Label Text="{Binding Title}" FontSize="Large" />
-              </StackLayout>
-            </ViewCell>
+            <TextCell Text="{Binding Title}" />
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>

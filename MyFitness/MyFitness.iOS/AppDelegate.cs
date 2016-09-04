@@ -26,7 +26,7 @@ namespace MyFitness.iOS
             new Syncfusion.SfChart.XForms.iOS.Renderers.SfChartRenderer();
 
             var manager = BITHockeyManager.SharedHockeyManager;
-            manager.Configure("379717");
+            manager.Configure("de667ac0ad204a4b9c03863b4417aa2e");
             manager.StartManager();
 
             global::Xamarin.Forms.Forms.Init();

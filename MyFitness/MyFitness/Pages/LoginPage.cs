@@ -13,7 +13,14 @@ namespace MyFitness.Pages
 
             MessagingCenter.Subscribe<ContentPage>(this, "Login", (sender) =>
             {
-                this.SendBackButtonPressed();
+                if (Device.OS == TargetPlatform.Android)
+                {
+                    this.SendBackButtonPressed();
+                }
+                else
+                {
+                    //this.Navigation.PopModalAsync();
+                }
             });
         }
     }

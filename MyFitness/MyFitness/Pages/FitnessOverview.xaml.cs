@@ -29,7 +29,7 @@ namespace MyFitness.Pages
         {
             _fitness = new Fitness();
             InitializeComponent();
-            SetColours();
+            this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
         }
 
         private void SetColours()
@@ -57,10 +57,13 @@ namespace MyFitness.Pages
             var now = DateTime.Now;
 
             var lseven = new Label() { Text = "Past 7 Days" };
+            lseven.HorizontalOptions = LayoutOptions.CenterAndExpand;
             var sevenDayChart = CreateLineChart(DateTime.Now.AddDays(-7), now);
             var lfourteen = new Label() { Text = "Past 14 Days" };
+            lfourteen.HorizontalOptions = LayoutOptions.CenterAndExpand;
             var fourteenDayChart = CreateLineChart(DateTime.Now.AddDays(-14), now);
             var lmonth = new Label() { Text = "Last Month" };
+            lmonth.HorizontalOptions = LayoutOptions.CenterAndExpand;
             var fourtyTwoDayChart = CreateLineChart(DateTime.Now.AddDays(-42), now);
 
             MainLayout.Children.Add(lseven);
@@ -69,6 +72,9 @@ namespace MyFitness.Pages
             MainLayout.Children.Add(fourteenDayChart);
             MainLayout.Children.Add(lmonth);
             MainLayout.Children.Add(fourtyTwoDayChart);
+
+            SetColours();
+
             base.OnAppearing();
         }
 
@@ -168,6 +174,7 @@ namespace MyFitness.Pages
             rangeNavigator.Maximum = toDate;
             rangeNavigator.ViewRangeStart = fromDate;
             rangeNavigator.ViewRangeEnd = toDate;
+            rangeNavigator.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
 
             rangeNavigator.EnableTooltip = false;
 

@@ -9,10 +9,12 @@ using MyFitness.Services;
 using Xamarin.Forms;
 using MyFitness.Model;
 using MyFitness.Model.Strava;
+using MyFitness.Data;
 
+[assembly: Xamarin.Forms.Dependency(typeof(Sql))]
 namespace MyFitness.Data
 {
-    class Sql
+    public class Sql
     {
         private SQLiteConnection database;
 
@@ -21,6 +23,8 @@ namespace MyFitness.Data
             database = DependencyService.Get<ISqLite>().GetConnection();
             CreateTable();
         }
+
+        #region Fitness
 
         /// <summary>
         /// Gets a model containing the althetes fitness for a particular id.
@@ -73,17 +77,21 @@ namespace MyFitness.Data
             {
                 return database.Insert(f);
             }
-        } 
-        
+        }
+
+        #endregion
+
+        #region Activity
+
         public IEnumerable<ActivityModel> GetActivities()
         {
             return database.Table<ActivityModel>();
-        }   
-        
+        }
+
         public ActivityModel GetActivity(int id)
         {
             return database.Table<ActivityModel>().Where(x => x.ActivityId == id).FirstOrDefault();
-        }    
+        }
 
         public int SaveActivity(ActivityModel activity)
         {
@@ -96,11 +104,25 @@ namespace MyFitness.Data
                 return database.Insert(activity);
             }
         }
+        #endregion
+
+        #region Athlete
+        public Athlete GetAthlete()
+        {
+            return database.Table<Athlete>().FirstOrDefault();
+        }
+
+        public int SaveAthlete(Athlete a)
+        {
+            return database.Insert(a);
+        }
+        #endregion
 
         private void CreateTable()
         {
             database.CreateTable<FitnessModel>();
             database.CreateTable<ActivityModel>();
+            database.CreateTable<Athlete>();
         }
     }
 }

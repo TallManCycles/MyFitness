@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+[assembly: Xamarin.Forms.Dependency(typeof(ActivityService))]
 namespace MyFitness.Calculations
 {
     public class Fitness
@@ -31,17 +32,19 @@ namespace MyFitness.Calculations
         {
             var model = new FitnessModel() { Fitness = Settings.CTL, Fatigue = Settings.ATL, Form = Settings.TSB, Id = 1, Date = DateTime.Now };
 
-            var athlete = await _activityService.GetAthlete();
+            Athlete athlete = await GetCurrentAthlete();
+
+            //Settings.LastCalculationDate = string.IsNullOrEmpty(Settings.LastCalculationDate) ? "" : DateTime.Now.AddDays(-3).ToString();
 
             if (athlete.Premium)
             {
                 if (string.IsNullOrEmpty(Settings.LastCalculationDate))
                 {
-                    model = await InitialCalculationPremium();
+                    model = await InitialCalculation(true);
                 }
                 else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date != DateTime.Now.Date)
                 {
-                    model = await CalculateFitnessPremium();
+                    model = await CalculateFitness(true);
                 }
                 else
                 {
@@ -52,32 +55,74 @@ namespace MyFitness.Calculations
             {
                 if (string.IsNullOrEmpty(Settings.LastCalculationDate))
                 {
-                    model = await InitialCalculation();
+                    model = await InitialCalculation(false);
                 }
 
                 if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date != DateTime.Now.Date)
                 {
-                    model = await CalculateFitness();
+                    model = await CalculateFitness(false);
                 }
             }
 
             return model;
         }
 
+        public int GetImprovement(int daysOfImprovement)
+        {
+            DateTime date = DateTime.Now.Date.AddDays(-daysOfImprovement);
+            IEnumerable<FitnessModel> items = _sql.GetFitnessRange(date, DateTime.Now);
+
+            decimal startImprovement = items.FirstOrDefault().Fitness;
+            decimal endImprovement = items.ElementAt(items.Count() - 1).Fitness;
+            decimal returnValue = endImprovement - startImprovement;
+
+            return (int)returnValue;
+        }
+
+        private async Task<Athlete> GetCurrentAthlete()
+        {
+            Athlete athlete = new Athlete();
+
+            if (!Settings.HasCompletedInitialSetup)
+            {
+                athlete = await _activityService.GetAthlete();
+                _sql.SaveAthlete(athlete);
+            }
+            else
+            {
+                athlete = _sql.GetAthlete();
+
+                if (athlete == null)
+                {
+                    athlete = await _activityService.GetAthlete();
+                    _sql.SaveAthlete(athlete);
+                }
+            }
+
+            return athlete;
+        }
+
         /// <summary>
         /// Calculates the athletes initial fitness from the last 42 days of activities.
         /// </summary>
+        /// <param name="premium">Indicates whether the athlete is premium or not.</param>
         /// <returns>A model containing the final fitness calculations from the last 42 days.</returns>
-        private async Task<FitnessModel> InitialCalculationPremium()
+        private async Task<FitnessModel> InitialCalculation(bool premium)
         {
+            ActivityZones zones = new ActivityZones();
             FitnessModel model = new FitnessModel();
+
+            if (!premium)
+            {
+                zones = await _activityService.GetActivityZones();
+            }
 
             List<Activity> activities = await _activityService.GetAthleteActivities(Settings.AccessToken);
 
             if (activities == null)
                 return model;
 
-            model = await FourtyTwoDayCalculation(activities, true);
+            model = await FourtyTwoDayCalculation(activities, premium, zones);
 
             Settings.LastCalculationDate = DateTime.Now.ToString();
             Settings.CTL = model.Fitness;
@@ -87,77 +132,30 @@ namespace MyFitness.Calculations
             return model;
         }
 
-        private async Task<FitnessModel> CalculateFitnessPremium()
+        private FitnessModel CreateModel(decimal fitness, decimal fatigue, decimal currentTSS, DateTime activityDate)
         {
-            FitnessModel previousDay = new FitnessModel();
-
-            decimal CurrentTSS = (decimal)0.00;
-
-            List<Activity> activities = await _activityService.GetAthleteActivities(Settings.AccessToken);
-     
-            IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date > DateTime.Parse(Settings.LastCalculationDate).Date);
-
-            DateTime date = DateTime.MinValue;
-
             FitnessModel model = new FitnessModel();
 
-            previousDay.Fitness = Settings.CTL;
-            previousDay.Fatigue = Settings.ATL;
-            previousDay.Form = Settings.TSB;
-            previousDay.Date = DateTime.Now.AddDays(-1);
+            model.Date = activityDate;
+            model.Fitness = CalculateCTL(fitness, currentTSS);
+            model.Form = model.Fitness - fatigue;
+            model.Fatigue = CalculateATL(fatigue, currentTSS);
 
-            var dayActivitySorted = dayActivity.OrderByDescending(x => x.StartDate);
+            _sql.SaveFitness(model);
 
-            foreach (Activity ad in dayActivitySorted)
-            {
-                if (ad.SufferScore.HasValue)
-                    CurrentTSS += ad.SufferScore.Value;
+            return model;
+        }
 
-                if (date == DateTime.MinValue)
-                {
-                    date = DateTime.Parse(ad.StartDate);
+        private async Task<IEnumerable<Activity>> GetAllPendingActivities()
+        {
+            IEnumerable<Activity> ac = await _activityService.GetAthleteActivities(Settings.AccessToken);
+            IEnumerable<Activity> actoday = ac.Where(x => DateTime.Parse(x.StartDate).Date > DateTime.Parse(Settings.LastCalculationDate).Date);
+            return actoday;
+        }
 
-                    model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
-                    model.Form = model.Fitness - previousDay.Fatigue;
-                    model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
-                    model.Date = DateTime.Parse(ad.StartDate);
-
-                    _sql.SaveFitness(model);
-                }
-                else
-                {
-                    if (date.Date != DateTime.Parse(ad.StartDate).Date)
-                    {
-                        model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
-                        model.Form = model.Fitness - previousDay.Fatigue;
-                        model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
-                        model.Date = DateTime.Parse(ad.StartDate);
-
-                        _sql.SaveFitness(model);
-                    }
-                }
-
-                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
-            }
-
-            
-
-            if (previousDay != null)
-            {
-                model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
-                model.Form = model.Fitness - previousDay.Fatigue;
-                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));                
-                model.Date = DateTime.Now.Date;
-                _sql.SaveFitness(model);
-
-                Settings.LastCalculationDate = DateTime.Now.ToString();
-
-                return model;
-            }
-            else
-            {
-                return model;
-            }            
+        private async Task<List<Activity>> GetAthleteActivities()
+        {
+            return await _activityService.GetAthleteActivities(Settings.AccessToken);
         }
 
         private decimal CalculateCTL(decimal current, decimal currentSufferScore)
@@ -217,74 +215,56 @@ namespace MyFitness.Calculations
             model.Date = DateTime.Now;
 
             return model;
-        }
+        }     
 
-        private async Task<FitnessModel> InitialCalculation()
+        private async Task<FitnessModel> CalculateFitness(bool premium)
         {
-            FitnessModel model = new FitnessModel();
+            FitnessModel previousDay = new FitnessModel();
+            ActivityZones zones = await GetActivityZones();
+            decimal CurrentTSS = 0.00M;
+            DateTime date = DateTime.MinValue;
+            FitnessModel model = _sql.GetLatestFitness();
 
-            ActivityZones zones = await _activityService.GetActivityZones();            
+            IEnumerable<Activity> dayActivity = await GetAllPendingActivities();
 
-            List<Activity> activities = await _activityService.GetAthleteActivities(Settings.AccessToken);
+            foreach (Activity ad in dayActivity)
+            {
+                if (date == DateTime.MinValue)
+                {
+                    date = DateTime.Parse(ad.StartDate);
+                }
+                else if (date.Date != DateTime.Parse(ad.StartDate).Date)
+                {
+                    model = CreateModel(model.Fitness, model.Fatigue, CurrentTSS, DateTime.Parse(ad.StartDate));
 
-            if (activities == null)
-                return model;
+                    date = DateTime.Parse(ad.StartDate);
 
-            model = await FourtyTwoDayCalculation(activities, false, zones);
+                    CurrentTSS = 0.00M;
+                }
+
+                if (premium)
+                {
+                    if (ad.SufferScore.HasValue)
+                        CurrentTSS += ad.SufferScore.Value;
+                }
+                else
+                {
+                    CurrentTSS += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
+                }
+
+                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
+            }            
+
+            model = CreateModel(model.Fitness, model.Fatigue, CurrentTSS, DateTime.Now);
 
             Settings.LastCalculationDate = DateTime.Now.ToString();
-            Settings.CTL = model.Fitness;
-            Settings.ATL = model.Fatigue;
-            Settings.TSB = model.Form;
 
             return model;
         }
 
-        private async Task<FitnessModel> CalculateFitness()
+        private async Task<ActivityZones> GetActivityZones()
         {
-            FitnessModel previousDay = new FitnessModel();
-
-            decimal CurrentTSS = (decimal)0.00;
-
-            List<Activity> activities = await _activityService.GetAthleteActivities(Settings.AccessToken);
-
-            ActivityZones zones = await _activityService.GetActivityZones();
-
-            IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date > DateTime.Parse(Settings.LastCalculationDate).Date);
-
-            foreach (Activity ad in dayActivity)
-            {
-                CurrentTSS += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
-
-                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
-            }
-
-            previousDay.Fitness = Settings.CTL;
-            previousDay.Fatigue = Settings.ATL;
-            previousDay.Form = Settings.TSB;
-            previousDay.Date = DateTime.Now.AddDays(-1);
-
-            FitnessModel model = new FitnessModel();
-
-            if (previousDay != null)
-            {
-                model.Fitness = previousDay.Fitness + ((CurrentTSS - previousDay.Fitness) * (decimal)(1.00 / 42.00));
-                model.Form = model.Fitness - previousDay.Fatigue;
-                model.Fatigue = previousDay.Fatigue + ((CurrentTSS - previousDay.Fatigue) * (decimal)(1.00 / 7.00));
-
-                model.Date = DateTime.Now.Date;
-                model.Id = previousDay.Id + 1;
-
-                Settings.LastCalculationDate = DateTime.Now.ToString();
-
-                _sql.SaveFitness(model);
-
-                return model;
-            }
-            else
-            {
-                return model;
-            }
+            return await _activityService.GetActivityZones();
         }
 
         private async Task<decimal> CalculateTSSFromActivity(int id, ActivityZones zones, ActType activityType, Activity activity)

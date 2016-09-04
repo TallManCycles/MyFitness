@@ -20,6 +20,9 @@ namespace MyFitness.Pages
             Color backgroundColor = Color.FromHex(Settings.BackgroundColor);
             Color fontColor = Color.FromHex(Settings.FontColor);
 
+            SaveButton.BackgroundColor = Color.FromHex(Settings.FontColor);
+            SaveButton.TextColor = Color.FromHex(Settings.BackgroundColor);
+
             this.BackgroundColor = backgroundColor;
             SwimLabel.TextColor = fontColor;
             SwimPrompt.TextColor = fontColor;

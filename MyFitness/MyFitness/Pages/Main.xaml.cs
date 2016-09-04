@@ -1,4 +1,6 @@
-﻿using MyFitness.Helpers;
+﻿using MyFitness.Calculations;
+using MyFitness.Data;
+using MyFitness.Helpers;
 using MyFitness.Services;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,16 @@ namespace MyFitness.Pages
             _loginManager = loginManager;
             masterPage = new MasterPage(_loginManager);
             Master = masterPage;
-            Detail = new NavigationPage(new MainPage());
+            Detail = new NavigationPage(new MainPage(DependencyService.Get<ActivityService>(),
+                                                        DependencyService.Get<Sql>()))
+            {
+                        BarBackgroundColor = Color.FromHex(Settings.BackgroundColor),
+                        BarTextColor = Color.FromHex(Settings.FontColor)
+            };
 
             masterPage.ListView.ItemSelected += OnItemSelected;
+
+            this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
         }
 
         void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -33,6 +42,15 @@ namespace MyFitness.Pages
                 if (item.Title == "Logout")
                 {
                     _loginManager.Logout();
+                }
+                else if (item.Title == "Fitness Details")
+                {
+                    Detail = new NavigationPage(new MainPage(   DependencyService.Get<ActivityService>(),
+                                                                DependencyService.Get<Sql>()))
+                    {
+                        BarBackgroundColor = Color.FromHex(Settings.BackgroundColor),
+                        BarTextColor = Color.FromHex(Settings.FontColor)
+                    };
                 }
                 else
                 {

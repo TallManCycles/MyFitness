@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using MyFitness.Model.Strava;
 using MyFitness.Data;
 using MyFitness.Helpers;
+using MyFitness.Services;
 
+[assembly: Xamarin.Forms.Dependency(typeof(ActivityService))]
 namespace MyFitness.Services
 {
     public class ActivityService

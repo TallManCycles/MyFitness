@@ -32,6 +32,19 @@ namespace MyFitness
                     Logout();
                 }
             }
+
+            if (_Instance == null)
+            {
+                _Instance = this;
+                _Instance.OAuthSettings =
+                                new Auth(
+                                    clientId: "1255",
+                                    scope: "write",
+                                    authorizeUrl: "https://www.strava.com/oauth/authorize",
+                                    redirectUrl: "http://www.tallmancycles.com.au",
+                                    accessToken: "https://www.strava.com/oauth/token",
+                                    clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");
+            }
         }
 
         #endregion
@@ -56,8 +69,8 @@ namespace MyFitness
                             _Instance.OAuthSettings =
                                 new Auth(
                                     clientId: "1255",
-                                    scope: "write", 
-                                    authorizeUrl: "https://www.strava.com/oauth/authorize", 
+                                    scope: "write",
+                                    authorizeUrl: "https://www.strava.com/oauth/authorize",
                                     redirectUrl: "http://www.tallmancycles.com.au",
                                     accessToken: "https://www.strava.com/oauth/token",
                                     clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");
@@ -101,8 +114,16 @@ namespace MyFitness
         public void Logout()
         {
             Settings.AccessToken = "";
-            MainPage = new Main(this);
-            MainPage.Navigation.PushModalAsync(new LoginPage());
+
+            if (Device.OS == TargetPlatform.Android)
+            {
+                MainPage = new Main(this);
+                MainPage.Navigation.PushModalAsync(new LoginPage());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new LoginPage());
+            }
         }
 
         public void ReturnFromLogin()
