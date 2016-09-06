@@ -17,5 +17,7 @@ namespace MyFitness.Model
         public decimal TSS { get; set; }
 
         public DateTime Date { get; set; }
+
+        public int StravaActivityId { get; set; }
     }
 }

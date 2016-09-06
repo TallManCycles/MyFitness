@@ -44,6 +44,7 @@ namespace MyFitness
                                     redirectUrl: "http://www.tallmancycles.com.au",
                                     accessToken: "https://www.strava.com/oauth/token",
                                     clientSecret: "ea5255107b2661d167cc46d1d42b4c8dbe43d318");
+                _Instance.SetupColors();
             }
         }
 

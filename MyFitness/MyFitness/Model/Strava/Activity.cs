@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using SQLite;
 
 namespace MyFitness.Model.Strava
 {
     public class Activity
     {
+        [PrimaryKey]
         [JsonProperty("id")]
         public int Id { get; set; }
 

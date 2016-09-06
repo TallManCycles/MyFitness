@@ -34,35 +34,26 @@ namespace MyFitness.Calculations
 
             Athlete athlete = await GetCurrentAthlete();
 
+            bool newActivites = await AnyNewActivites();
+
             //Settings.LastCalculationDate = string.IsNullOrEmpty(Settings.LastCalculationDate) ? "" : DateTime.Now.AddDays(-3).ToString();
 
-            if (athlete.Premium)
+            if (string.IsNullOrEmpty(Settings.LastCalculationDate))
             {
-                if (string.IsNullOrEmpty(Settings.LastCalculationDate))
-                {
-                    model = await InitialCalculation(true);
-                }
-                else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date != DateTime.Now.Date)
-                {
-                    model = await CalculateFitness(true);
-                }
-                else
-                {
-                    model = _sql.GetLatestFitness();
-                }
+                model = await InitialCalculation(athlete.Premium);
+            }
+            else if (newActivites)
+            {
+                model = await CalculateFitness(athlete.Premium);
+            }
+            else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date < DateTime.Now.Date)
+            {
+                model = await CalculateFitness(athlete.Premium);
             }
             else
             {
-                if (string.IsNullOrEmpty(Settings.LastCalculationDate))
-                {
-                    model = await InitialCalculation(false);
-                }
-
-                if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date != DateTime.Now.Date)
-                {
-                    model = await CalculateFitness(false);
-                }
-            }
+                model = _sql.GetLatestFitness();
+            }            
 
             return model;
         }
@@ -153,6 +144,12 @@ namespace MyFitness.Calculations
             return actoday;
         }
 
+        private async Task<IEnumerable<Activity>> GetAllActivites()
+        {
+            IEnumerable<Activity> ac = await _activityService.GetAthleteActivities(Settings.AccessToken);
+            return ac;
+        }
+
         private async Task<List<Activity>> GetAthleteActivities()
         {
             return await _activityService.GetAthleteActivities(Settings.AccessToken);
@@ -179,6 +176,7 @@ namespace MyFitness.Calculations
             for (int i = -42; i <= 0; i++)
             {
                 decimal todaysSufferScore = 0;
+                decimal activitySufferScore = 0;
 
                 IEnumerable<Activity> dayActivity = activities.Where(x => DateTime.Parse(x.StartDate).Date == DateTime.Now.AddDays(i).Date);
 
@@ -187,17 +185,22 @@ namespace MyFitness.Calculations
                     if (premium)
                     {
                         if (ad.SufferScore.HasValue)
+                        {
                             todaysSufferScore += ad.SufferScore.Value;
+                            activitySufferScore = ad.SufferScore.Value;
+                        }
                     }
                     else
                     {
                         if (zones != null)
                         {
-                            todaysSufferScore += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
+                            var s = await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
+                            todaysSufferScore += s;
+                            activitySufferScore = s;
                         }
                     }
 
-                    _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = todaysSufferScore });
+                    _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = activitySufferScore, StravaActivityId = ad.Id });
                 }
 
                 CTL = CalculateCTL(CTL, todaysSufferScore);
@@ -221,7 +224,8 @@ namespace MyFitness.Calculations
         {
             FitnessModel previousDay = new FitnessModel();
             ActivityZones zones = await GetActivityZones();
-            decimal CurrentTSS = 0.00M;
+            decimal DailyTotalTSS = 0.00M;
+            decimal activityTSS = 0.00M;
             DateTime date = DateTime.MinValue;
             FitnessModel model = _sql.GetLatestFitness();
 
@@ -229,33 +233,40 @@ namespace MyFitness.Calculations
 
             foreach (Activity ad in dayActivity)
             {
+                activityTSS = 0.00M;
+
                 if (date == DateTime.MinValue)
                 {
                     date = DateTime.Parse(ad.StartDate);
                 }
                 else if (date.Date != DateTime.Parse(ad.StartDate).Date)
                 {
-                    model = CreateModel(model.Fitness, model.Fatigue, CurrentTSS, DateTime.Parse(ad.StartDate));
+                    model = CreateModel(model.Fitness, model.Fatigue, DailyTotalTSS, DateTime.Parse(ad.StartDate));
 
                     date = DateTime.Parse(ad.StartDate);
 
-                    CurrentTSS = 0.00M;
+                    DailyTotalTSS = 0.00M;
                 }
 
                 if (premium)
                 {
                     if (ad.SufferScore.HasValue)
-                        CurrentTSS += ad.SufferScore.Value;
+                    {
+                        DailyTotalTSS += ad.SufferScore.Value;
+                        activityTSS = ad.SufferScore.Value;
+                    }
                 }
                 else
                 {
-                    CurrentTSS += await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
+                    var s = await CalculateTSSFromActivity(ad.Id, zones, ad.Type, ad);
+                    DailyTotalTSS += s;
+                    activityTSS = s;
                 }
 
-                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = CurrentTSS });
+                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = activityTSS, StravaActivityId = ad.Id });
             }            
 
-            model = CreateModel(model.Fitness, model.Fatigue, CurrentTSS, DateTime.Now);
+            model = CreateModel(model.Fitness, model.Fatigue, DailyTotalTSS, DateTime.Now);
 
             Settings.LastCalculationDate = DateTime.Now.ToString();
 
@@ -369,6 +380,27 @@ namespace MyFitness.Calculations
 
             return tss;
 
+        }
+
+        private async Task<bool> AnyNewActivites()
+        {
+            if (string.IsNullOrEmpty(Settings.AccessToken))
+                return true;
+
+            IEnumerable<Activity> activites = await GetAllActivites();
+
+            IEnumerable<ActivityModel> savedActivites = _sql.GetActivities();
+
+            foreach (Activity a in activites)
+            {
+                if (!savedActivites.Any(x => x.StravaActivityId == a.Id))
+                {
+                    Settings.LastCalculationDate = a.StartDate;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

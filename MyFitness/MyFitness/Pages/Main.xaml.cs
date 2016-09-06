@@ -22,12 +22,21 @@ namespace MyFitness.Pages
             _loginManager = loginManager;
             masterPage = new MasterPage(_loginManager);
             Master = masterPage;
-            Detail = new NavigationPage(new MainPage(DependencyService.Get<ActivityService>(),
-                                                        DependencyService.Get<Sql>()))
+            try
             {
-                        BarBackgroundColor = Color.FromHex(Settings.BackgroundColor),
-                        BarTextColor = Color.FromHex(Settings.FontColor)
-            };
+                Detail = new NavigationPage(new MainPage(DependencyService.Get<ActivityService>(),
+                                                        DependencyService.Get<Sql>()))
+                {
+                    BarBackgroundColor = Color.FromHex(Settings.BackgroundColor),
+                    BarTextColor = Color.FromHex(Settings.FontColor)
+                };
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
 
             masterPage.ListView.ItemSelected += OnItemSelected;
 

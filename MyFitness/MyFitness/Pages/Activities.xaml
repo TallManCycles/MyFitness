@@ -14,7 +14,7 @@
           <DataTemplate>
             <TextCell x:Name="NewTextCell"
                       Text="{Binding ActivityName}"
-                      Detail="{Binding SufferScore, StringFormat='Suffer Score: {0}'}"/>                  
+                      Detail="{Binding SufferScore, StringFormat='Suffer Score: {0: 0.0}'}"/>                  
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>
