@@ -22,11 +22,14 @@ namespace MyFitness.Pages
         SfCircularGauge fatigueguage;
         SfCircularGauge formguague;
 
+        public bool isLoading { set { ActIndicator.IsRunning = value; ActIndicator.IsVisible = value; } }
+
         FitnessModel model = new FitnessModel();
         private Fitness _fitness;
 
         public FitnessOverview()
         {
+            
             _fitness = new Fitness();
             InitializeComponent();
             this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
@@ -48,6 +51,7 @@ namespace MyFitness.Pages
 
         protected async override void OnAppearing()
         {
+            isLoading = true;
             model = await _fitness.GetCurrentFitness();
 
             fitnessguague = CreateGuague("Fitness", (double)model.Fitness, 0, 50, 10, FitnessType.fitness);
@@ -76,6 +80,8 @@ namespace MyFitness.Pages
             SetColours();
 
             base.OnAppearing();
+
+            isLoading = false;
         }
 
         private SfCircularGauge CreateGuague(string headerText, double value, int minRange, int maxRange, int interval, FitnessType type)
@@ -176,7 +182,7 @@ namespace MyFitness.Pages
             rangeNavigator.ViewRangeEnd = toDate;
             rangeNavigator.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
 
-            rangeNavigator.EnableTooltip = false;
+            rangeNavigator.EnableTooltip = true;
 
             var data = new DataModel(fromDate, toDate);
             rangeNavigator.ItemsSource = data.Data;

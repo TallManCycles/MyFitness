@@ -23,6 +23,7 @@ namespace MyFitness.Pages
         private Sql _sqlService;
         private ActivityService _activityService;
         private FitnessModel model;
+        public bool isLoading { set { ActIndicator.IsEnabled = value; ActIndicator.IsRunning = value; }}
 
         /// <summary>
         /// Instantiates a new MainPage.
@@ -37,7 +38,6 @@ namespace MyFitness.Pages
             _fitness = new Fitness();
             InitializeComponent();
             model = new FitnessModel();
-
             SetColours();
         }
 
@@ -68,6 +68,8 @@ namespace MyFitness.Pages
         {
             FitnessModel model = new FitnessModel();
 
+            isLoading = true;
+
             if (!string.IsNullOrEmpty(Settings.AccessToken))
             {
                 model = await _fitness.GetCurrentFitness();
@@ -79,14 +81,18 @@ namespace MyFitness.Pages
             MainLayout.BindingContext = model;
 
             base.OnAppearing();
+
+            isLoading = false;
         }
 
         private async void Refresh(object sender, EventArgs e)
         {
+            isLoading = true;
             model = await _fitness.GetCurrentFitness();
             var athlete = await _activityService.GetAthlete();
             AthleteName.Text = athlete.FirstName;
             MainLayout.BindingContext = model;
+            isLoading = false;
         }
 
         private void GetImprovement()

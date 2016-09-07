@@ -2,8 +2,27 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyFitness.Pages.MainPage">
-  <ScrollView>
-  <StackLayout x:Name="MainLayout" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Padding="10">
+  <RelativeLayout>
+    <ActivityIndicator x:Name="ActIndicator"
+                RelativeLayout.WidthConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Width,
+                                        Factor=1}"
+                RelativeLayout.HeightConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Height,
+                                        Factor=1}" Scale="0.5"/>
+  <StackLayout x:Name="MainLayout" 
+               VerticalOptions="FillAndExpand" 
+               HorizontalOptions="FillAndExpand" Padding="10" Spacing="20"
+               RelativeLayout.WidthConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Width,
+                                        Factor=1}"
+                RelativeLayout.HeightConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Height,
+                                        Factor=1}">
 
     <Label x:Name="AthleteName" FontSize="30" HorizontalOptions="CenterAndExpand" />
 
@@ -39,5 +58,5 @@
        
     <Button x:Name="RefreshButton" Text="Refresh" FontSize="Large" Clicked="Refresh" HorizontalOptions="FillAndExpand"/>
   </StackLayout>
-</ScrollView>
+  </RelativeLayout>
 </ContentPage>

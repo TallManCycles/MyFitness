@@ -3,8 +3,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MyFitness.Pages.FitnessOverview">
   <Label Text="{Binding MainText}" VerticalOptions="Center" HorizontalOptions="Center" />
-  <ScrollView>    
-    <StackLayout x:Name="MainLayout" Spacing="20">
-    </StackLayout>
-  </ScrollView>    
+
+<RelativeLayout>
+  <ActivityIndicator x:Name="ActIndicator"
+              RelativeLayout.WidthConstraint=
+              "{ConstraintExpression Type=RelativeToParent, 
+                                    Property=Width,
+                                    Factor=1}"
+              RelativeLayout.HeightConstraint=
+              "{ConstraintExpression Type=RelativeToParent, 
+                                    Property=Height,
+                                    Factor=1}" Scale="0.5"/>
+
+  <ScrollView RelativeLayout.WidthConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Width,
+                                        Factor=1}"
+                    RelativeLayout.HeightConstraint=
+                 "{ConstraintExpression Type=RelativeToParent, 
+                                        Property=Height,
+                                        Factor=1}">
+      <StackLayout x:Name="MainLayout"
+                   VerticalOptions="FillAndExpand"
+                   HorizontalOptions="FillAndExpand" Padding="10" Spacing="20">
+      </StackLayout>
+</ScrollView>
+</RelativeLayout>
 </ContentPage>

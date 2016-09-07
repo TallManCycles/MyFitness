@@ -58,8 +58,15 @@ namespace MyFitness.Data
 
         public FitnessModel GetLatestFitness()
         {
-            int id = database.Table<FitnessModel>().Max(x => x.Id);
-            return database.Table<FitnessModel>().FirstOrDefault(y => y.Id == id);
+            if (database.Table<FitnessModel>().Any())
+            {
+                int id = database.Table<FitnessModel>().Max(x => x.Id);
+                return database.Table<FitnessModel>().FirstOrDefault(y => y.Id == id);
+            }
+            else
+            {
+                return new FitnessModel();
+            }
         }
 
         /// <summary>

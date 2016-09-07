@@ -34,15 +34,11 @@ namespace MyFitness.Calculations
 
             Athlete athlete = await GetCurrentAthlete();
 
-            bool newActivites = await AnyNewActivites();
-
-            //Settings.LastCalculationDate = string.IsNullOrEmpty(Settings.LastCalculationDate) ? "" : DateTime.Now.AddDays(-3).ToString();
-
             if (string.IsNullOrEmpty(Settings.LastCalculationDate))
             {
                 model = await InitialCalculation(athlete.Premium);
             }
-            else if (newActivites)
+            else if (await AnyNewActivites())
             {
                 model = await CalculateFitness(athlete.Premium);
             }
