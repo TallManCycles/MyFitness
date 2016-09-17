@@ -19,5 +19,9 @@ namespace MyFitness.Model
         public DateTime Date { get; set; }
 
         public int StravaActivityId { get; set; }
+
+        public int ActivityType { get; set; }
+
+        public float Distance { get; set; }
     }
 }

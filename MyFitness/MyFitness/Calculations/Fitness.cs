@@ -44,7 +44,12 @@ namespace MyFitness.Calculations
             }
             else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date < DateTime.Now.Date)
             {
-                model = await CalculateFitness(athlete.Premium);
+                bool newActivities = await AnyNewActivites();
+
+                if (newActivities)
+                {
+                    model = await CalculateFitness(athlete.Premium);
+                }
             }
             else
             {
@@ -196,7 +201,10 @@ namespace MyFitness.Calculations
                         }
                     }
 
-                    _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = activitySufferScore, StravaActivityId = ad.Id });
+                    _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name,
+                        Date = DateTime.Parse(ad.StartDate), TSS = activitySufferScore,
+                        StravaActivityId = ad.Id, ActivityType = (int)ad.Type,
+                        Distance = ad.Distance / 1000 });
                 }
 
                 CTL = CalculateCTL(CTL, todaysSufferScore);
@@ -259,7 +267,11 @@ namespace MyFitness.Calculations
                     activityTSS = s;
                 }
 
-                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name, Date = DateTime.Parse(ad.StartDate), TSS = activityTSS, StravaActivityId = ad.Id });
+                _sql.SaveActivity(new ActivityModel() { ActivityName = ad.Name,
+                    Date = DateTime.Parse(ad.StartDate),
+                    TSS = activityTSS, StravaActivityId = ad.Id,
+                    ActivityType = (int)ad.Type,
+                    Distance = ad.Distance / 1000});
             }            
 
             model = CreateModel(model.Fitness, model.Fatigue, DailyTotalTSS, DateTime.Now);
@@ -387,13 +399,11 @@ namespace MyFitness.Calculations
 
             IEnumerable<ActivityModel> savedActivites = _sql.GetActivities();
 
-            foreach (Activity a in activites)
+            var result = savedActivites.Where(p => !activites.Any(p2 => p2.Id == p.StravaActivityId));
+
+            if (result.Count() > 0)
             {
-                if (!savedActivites.Any(x => x.StravaActivityId == a.Id))
-                {
-                    Settings.LastCalculationDate = a.StartDate;
-                    return true;
-                }
+                return true;
             }
 
             return false;

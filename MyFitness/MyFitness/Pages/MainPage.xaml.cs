@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Syncfusion.SfGauge;
-
 using Xamarin.Forms;
 using Syncfusion.SfGauge.XForms;
 
@@ -47,19 +46,28 @@ namespace MyFitness.Pages
 
             Color textColor = Color.FromHex(Settings.FontColor);
 
-            AthleteName.TextColor = textColor;
             FitnessLabel.TextColor = textColor;
             FitnessValue.TextColor = textColor;
-            FatigueLabel.TextColor = textColor;
-            FatigueValue.TextColor = textColor;
-            FormLabel.TextColor = textColor;
-            FormValue.TextColor = textColor;
-            LastSevenDaysLabel.TextColor = textColor;
-            LastSevenDays.TextColor = textColor;
-            LastFourteenDays.TextColor = textColor;
-            LastFourteenDaysLabel.TextColor = textColor;
-            LastTwentyEightDays.TextColor = textColor;
-            LastTwentyEightDaysLabel.TextColor = textColor;
+            lblReadyToRace.TextColor = textColor;
+            lblTrainingHard.TextColor = textColor;
+
+            //Labels
+            lblSevenDay.TextColor = textColor;
+            lblSixWeek.TextColor = textColor;
+            lblImprovement.TextColor = textColor;
+            lblRisk.TextColor = textColor;
+            lblConsistency.TextColor = textColor;
+
+            //Seven Day
+            lblSevenDayConsistency.TextColor = textColor;
+            lblSevenDayImprovement.TextColor = textColor;
+            lblSevenDayRisk.TextColor = textColor;
+
+            //Six Week
+            lblSixWeekImprovement.TextColor = textColor;
+            lblSixWeekConsistency.TextColor = textColor;
+            lblSixWeekRisk.TextColor = textColor;
+
             RefreshButton.BackgroundColor = Color.FromHex(Settings.FontColor);
             RefreshButton.TextColor = Color.FromHex(Settings.BackgroundColor);
         }
@@ -73,8 +81,6 @@ namespace MyFitness.Pages
             if (!string.IsNullOrEmpty(Settings.AccessToken))
             {
                 model = await _fitness.GetCurrentFitness();
-                var athlete = await _activityService.GetAthlete();
-                AthleteName.Text = athlete.FirstName;
                 GetImprovement();
             }           
 
@@ -90,16 +96,14 @@ namespace MyFitness.Pages
             isLoading = true;
             model = await _fitness.GetCurrentFitness();
             var athlete = await _activityService.GetAthlete();
-            AthleteName.Text = athlete.FirstName;
             MainLayout.BindingContext = model;
             isLoading = false;
         }
 
         private void GetImprovement()
         {
-            LastSevenDays.Text = _fitness.GetImprovement(7).ToString("+#;-#;0");
-            LastFourteenDays.Text = _fitness.GetImprovement(14).ToString("+#;-#;0");
-            LastTwentyEightDays.Text = _fitness.GetImprovement(28).ToString("+#;-#;0");
+            lblSevenDayImprovement.Text = _fitness.GetImprovement(7).ToString("+#;-#;0");
+            lblSixWeekImprovement.Text = _fitness.GetImprovement(42).ToString("+#;-#;0");
         }
     }
 }

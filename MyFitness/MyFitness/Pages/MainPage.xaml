@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:charting="clr-namespace:Syncfusion"
              x:Class="MyFitness.Pages.MainPage">
   <RelativeLayout>
     <ActivityIndicator x:Name="ActIndicator"
@@ -12,51 +13,63 @@
                  "{ConstraintExpression Type=RelativeToParent, 
                                         Property=Height,
                                         Factor=1}" Scale="0.5"/>
-  <StackLayout x:Name="MainLayout" 
-               VerticalOptions="FillAndExpand" 
-               HorizontalOptions="FillAndExpand" Padding="10" Spacing="20"
-               RelativeLayout.WidthConstraint=
+    <ScrollView RelativeLayout.WidthConstraint=
                  "{ConstraintExpression Type=RelativeToParent, 
                                         Property=Width,
                                         Factor=1}"
-                RelativeLayout.HeightConstraint=
+                    RelativeLayout.HeightConstraint=
                  "{ConstraintExpression Type=RelativeToParent, 
                                         Property=Height,
                                         Factor=1}">
+      <StackLayout x:Name="MainLayout"
+                   VerticalOptions="FillAndExpand"
+                   HorizontalOptions="FillAndExpand" Padding="10" Spacing="20">
 
-    <Label x:Name="AthleteName" FontSize="30" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="FitnessLabel" Text="Current Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="FitnessLabel" Text="Fitness" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+        <Label x:Name="FitnessValue" Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="50" HorizontalOptions="CenterAndExpand" />
+
+        <!--<charting:SfGauge.XForms.SfLinearGauge x:Name="LinearGuage"/>-->
+
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblTrainingHard" Text="Training Hard" FontSize="Large" HorizontalOptions="StartAndExpand"/>
+          <Label x:Name="lblReadyToRace" Text="Ready To Race" FontSize="Large" HorizontalOptions="EndAndExpand"/>
+        </StackLayout>
+
+        <!--<StackLayout Orientation="Horizontal">      
       <Label x:Name="FatigueLabel" Text="Fatigue" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>
+    </StackLayout>-->
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="FitnessValue" Text="{Binding Fitness, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
+        <!--<StackLayout Orientation="Horizontal">      
       <Label x:Name="FatigueValue" Text="{Binding Fatigue, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>
+    </StackLayout>-->
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="FormLabel" Text="Overall Form" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-      <Label x:Name="LastSevenDaysLabel" Text="Last 7 Days" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblSevenDay" Text="Last 7 Days" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+          <Label x:Name="lblSixWeek" Text="Last 6 Weeks" FontSize="Large" HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="FormValue" Text="{Binding Form, StringFormat='{0: 0.0}'}" FontSize="25" HorizontalOptions="CenterAndExpand" />
-      <Label x:Name="LastSevenDays" FontSize="25" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblSevenDayImprovement" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblImprovement" Text="Improvement" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblSixWeekImprovement" HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="LastFourteenDaysLabel" Text="Last 14 Days" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-      <Label x:Name="LastTwentyEightDaysLabel" Text="Last 28 Days" FontSize="Large" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblSevenDayConsistency" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblConsistency" Text="Consistency" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblSixWeekConsistency" HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
 
-    <StackLayout Orientation="Horizontal">
-      <Label x:Name="LastFourteenDays" FontSize="25" HorizontalOptions="CenterAndExpand" />
-      <Label x:Name="LastTwentyEightDays" FontSize="25" HorizontalOptions="CenterAndExpand" />
-    </StackLayout>   
-       
-    <Button x:Name="RefreshButton" Text="Refresh" FontSize="Large" Clicked="Refresh" HorizontalOptions="FillAndExpand"/>
-  </StackLayout>
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblSevenDayRisk" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblRisk" Text="Risk Of Injury" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblSixWeekRisk" HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
+
+        <Button x:Name="RefreshButton" Text="Refresh" FontSize="Large" Clicked="Refresh" HorizontalOptions="FillAndExpand"/>
+
+      </StackLayout>
+    </ScrollView>
   </RelativeLayout>
 </ContentPage>

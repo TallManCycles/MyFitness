@@ -4,17 +4,29 @@
              x:Class="MyFitness.Pages.Activities">
   <Label Text="{Binding MainText}" VerticalOptions="Center" HorizontalOptions="Center" />
   <ScrollView>
-    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10">
       <Label Text="Activities" FontSize="Large" HorizontalOptions="CenterAndExpand"/>
       <ListView x:Name="ActivityView" 
                 HorizontalOptions="FillAndExpand"                 
                 VerticalOptions="FillAndExpand" 
                 ItemSelected="SelectedCell" BackgroundColor="Transparent">
-        <ListView.ItemTemplate HorizontalOptions="CenterAndExpand">
+        <ListView.ItemTemplate>
           <DataTemplate>
-            <TextCell x:Name="NewTextCell"
-                      Text="{Binding ActivityName}"
-                      Detail="{Binding SufferScore, StringFormat='Suffer Score: {0: 0.0}'}"/>                  
+            <ViewCell>
+            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="5">
+              
+              <Label Text="{Binding ActivityName, StringFormat='Description: {0}'}" 
+                     TextColor="Black" HorizontalOptions="FillAndExpand"/>
+              
+              <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
+                <Label Text="{Binding Distance, StringFormat='Dist:{0: 0.0}kms'}" 
+                       TextColor="Black" HorizontalOptions="StartAndExpand"/>
+                <Label Text="{Binding SufferScore, StringFormat='Training Load:{0: 0.0}'}" 
+                       TextColor="Black" HorizontalOptions="StartAndExpand"/>                
+              
+              </StackLayout>
+            </StackLayout>
+            </ViewCell>
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>

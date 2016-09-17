@@ -5,6 +5,7 @@ using System.Linq;
 using Foundation;
 using UIKit;
 using HockeyApp.iOS;
+using Syncfusion.SfGauge.XForms.iOS;
 
 namespace MyFitness.iOS
 {
@@ -24,6 +25,7 @@ namespace MyFitness.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             new Syncfusion.SfChart.XForms.iOS.Renderers.SfChartRenderer();
+            new SfLinearGaugeRenderer();
 
             var manager = BITHockeyManager.SharedHockeyManager;
             manager.Configure("de667ac0ad204a4b9c03863b4417aa2e");

@@ -33,6 +33,7 @@ namespace MyFitness.Pages
                 a.ActivityName = activity.ActivityName.PadRight(60).Substring(0, 20).Trim();
                 a.SufferScore = activity.TSS;
                 a.ActivityDate = activity.Date;
+                a.Distance = activity.Distance;
                 activityList.Add(a);
             }
 
@@ -70,5 +71,7 @@ namespace MyFitness.Pages
         public decimal SufferScore { get; set; }
 
         public DateTime ActivityDate { get; set; }
+
+        public float Distance { get; set; }
     }
 }
