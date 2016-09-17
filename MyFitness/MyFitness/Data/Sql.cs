@@ -95,6 +95,11 @@ namespace MyFitness.Data
             return database.Table<ActivityModel>();
         }
 
+        public IEnumerable<ActivityModel> GetActivityRange(DateTime fromDate, DateTime toDate)
+        {
+            return database.Table<ActivityModel>().Where(x => x.Date >= fromDate && x.Date <= toDate);
+        }
+
         public ActivityModel GetActivity(int id)
         {
             return database.Table<ActivityModel>().Where(x => x.ActivityId == id).FirstOrDefault();

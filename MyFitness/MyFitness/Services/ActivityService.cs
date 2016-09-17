@@ -47,6 +47,28 @@ namespace MyFitness.Services
             }
         }
 
+        public async Task<List<Activity>> GetLastTenDayActivities(string authenticationToken)
+        {
+            var activities = new List<Activity>();
+
+            string url = "https://www.strava.com/api/v3/athlete/activities?include_all_efforts=true&access_token=";
+
+            FitnessResponse response = await _webService.ReceiveRequest(
+                url
+                + authenticationToken
+                + "&after="
+                + ConvertToUnixTimestamp(DateTime.Now.AddDays(-10)));
+
+            if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
+            {
+                return JsonConvert.DeserializeObject<List<Activity>>(response.Content);
+            }
+            else
+            {
+                return activities;
+            }
+        }
+
         public async Task<MyFitness.Model.Strava.Stream[]> GetActivityStream(int activityId, StreamType type)
         {
             Stream[] s = new Stream[] { new Stream() };

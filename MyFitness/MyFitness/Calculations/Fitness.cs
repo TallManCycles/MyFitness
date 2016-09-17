@@ -38,13 +38,13 @@ namespace MyFitness.Calculations
             {
                 model = await InitialCalculation(athlete.Premium);
             }
-            else if (await AnyNewActivites())
+            else if (await AnyNewActivitesInLastTenDays())
             {
                 model = await CalculateFitness(athlete.Premium);
             }
             else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date < DateTime.Now.Date)
             {
-                bool newActivities = await AnyNewActivites();
+                bool newActivities = await AnyNewActivitesInLastTenDays();
 
                 if (newActivities)
                 {
@@ -69,6 +69,41 @@ namespace MyFitness.Calculations
             decimal returnValue = endImprovement - startImprovement;
 
             return (int)returnValue;
+        }
+
+        public int GetConsistency(int daysOfConsistency)
+        {
+            DateTime date = DateTime.Now.Date.AddDays(-daysOfConsistency);
+            IEnumerable<ActivityModel> items = _sql.GetActivityRange(date, DateTime.Now);
+
+            DateTime activityDate = DateTime.MinValue;
+            int conistency = 0;
+
+            foreach (ActivityModel a in items)
+            {
+                if (activityDate.Date != a.Date.Date)
+                {
+                    conistency += 1;
+                }
+            }
+
+            var returnValue = ((decimal)conistency / (decimal)daysOfConsistency) * 100M;
+
+            return (int)returnValue;     
+        }
+
+        public int GetRiskOfInjury(int daysOfRIsk)
+        {
+            DateTime date = DateTime.Now.Date.AddDays(-daysOfRIsk);
+            IEnumerable<FitnessModel> items = _sql.GetFitnessRange(date, DateTime.Now);
+
+            decimal startRisk = items.FirstOrDefault().Form;
+            decimal endRisk = items.ElementAt(items.Count() - 1).Form;
+            decimal returnValue = endRisk - startRisk;
+
+            var r = ((decimal)returnValue / (decimal)daysOfRIsk) * 100M;
+
+            return (int)r;
         }
 
         private async Task<Athlete> GetCurrentAthlete()
@@ -99,7 +134,7 @@ namespace MyFitness.Calculations
         /// </summary>
         /// <param name="premium">Indicates whether the athlete is premium or not.</param>
         /// <returns>A model containing the final fitness calculations from the last 42 days.</returns>
-        private async Task<FitnessModel> InitialCalculation(bool premium)
+        public async Task<FitnessModel> InitialCalculation(bool premium)
         {
             ActivityZones zones = new ActivityZones();
             FitnessModel model = new FitnessModel();
@@ -151,6 +186,13 @@ namespace MyFitness.Calculations
             return ac;
         }
 
+        private async Task<IEnumerable<Activity>> GetLastTenDaysActivities()
+
+        {
+            IEnumerable<Activity> ac = await _activityService.GetLastTenDayActivities(Settings.AccessToken);
+            return ac;
+        }
+
         private async Task<List<Activity>> GetAthleteActivities()
         {
             return await _activityService.GetAthleteActivities(Settings.AccessToken);
@@ -166,7 +208,7 @@ namespace MyFitness.Calculations
             return (current + ((currentSufferScore - current) * (decimal)(1.00 / 7.00)));
         }
 
-        private async Task<FitnessModel> FourtyTwoDayCalculation(List<Activity> activities, bool premium, ActivityZones zones = null)
+        public async Task<FitnessModel> FourtyTwoDayCalculation(List<Activity> activities, bool premium, ActivityZones zones = null)
         {
             FitnessModel model = new FitnessModel();
 
@@ -224,7 +266,7 @@ namespace MyFitness.Calculations
             return model;
         }     
 
-        private async Task<FitnessModel> CalculateFitness(bool premium)
+        public async Task<FitnessModel> CalculateFitness(bool premium)
         {
             FitnessModel previousDay = new FitnessModel();
             ActivityZones zones = await GetActivityZones();
@@ -279,7 +321,7 @@ namespace MyFitness.Calculations
             Settings.LastCalculationDate = DateTime.Now.ToString();
 
             return model;
-        }
+        }        
 
         private async Task<ActivityZones> GetActivityZones()
         {
@@ -390,14 +432,14 @@ namespace MyFitness.Calculations
 
         }
 
-        private async Task<bool> AnyNewActivites()
+        private async Task<bool> AnyNewActivitesInLastTenDays()
         {
             if (string.IsNullOrEmpty(Settings.AccessToken))
                 return true;
 
-            IEnumerable<Activity> activites = await GetAllActivites();
+            IEnumerable<Activity> activites = await GetLastTenDaysActivities();
 
-            IEnumerable<ActivityModel> savedActivites = _sql.GetActivities();
+            IEnumerable<ActivityModel> savedActivites = _sql.GetActivities().Where(x => x.Date.Date >= DateTime.Now.AddDays(-10).Date);
 
             var result = savedActivites.Where(p => !activites.Any(p2 => p2.Id == p.StravaActivityId));
 

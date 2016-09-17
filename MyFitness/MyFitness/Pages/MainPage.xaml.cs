@@ -82,6 +82,8 @@ namespace MyFitness.Pages
             {
                 model = await _fitness.GetCurrentFitness();
                 GetImprovement();
+                GetConsistency();
+                GetRiskOfInjury();
             }           
 
             MainLayout.BindingContext = model;
@@ -104,6 +106,18 @@ namespace MyFitness.Pages
         {
             lblSevenDayImprovement.Text = _fitness.GetImprovement(7).ToString("+#;-#;0");
             lblSixWeekImprovement.Text = _fitness.GetImprovement(42).ToString("+#;-#;0");
+        }
+
+        private void GetConsistency()
+        {
+            lblSevenDayConsistency.Text = _fitness.GetConsistency(7).ToString("+#;-#;0") + "%";
+            lblSixWeekConsistency.Text = _fitness.GetConsistency(42).ToString("+#;-#;0") + "%";
+        }
+
+        private void GetRiskOfInjury()
+        {
+            lblSevenDayRisk.Text = _fitness.GetRiskOfInjury(7).ToString("+#;-#;0") + "%";
+            lblSixWeekRisk.Text = _fitness.GetRiskOfInjury(42).ToString("+#;-#;0") + "%";
         }
     }
 }
