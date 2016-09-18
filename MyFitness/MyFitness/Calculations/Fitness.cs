@@ -44,12 +44,7 @@ namespace MyFitness.Calculations
             }
             else if (!string.IsNullOrEmpty(Settings.LastCalculationDate) && DateTime.Parse(Settings.LastCalculationDate).Date < DateTime.Now.Date)
             {
-                bool newActivities = await AnyNewActivitesInLastTenDays();
-
-                if (newActivities)
-                {
-                    model = await CalculateFitness(athlete.Premium);
-                }
+                model = await CalculateFitness(athlete.Premium);
             }
             else
             {
