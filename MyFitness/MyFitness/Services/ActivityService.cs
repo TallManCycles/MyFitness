@@ -57,7 +57,7 @@ namespace MyFitness.Services
                 url
                 + authenticationToken
                 + "&after="
-                + ConvertToUnixTimestamp(DateTime.Now.AddDays(-10)));
+                + ConvertToUnixTimestamp(DateTime.Now.AddDays(-10).Date));
 
             if (response.Status == System.Net.HttpStatusCode.OK && !string.IsNullOrEmpty(response.Content))
             {

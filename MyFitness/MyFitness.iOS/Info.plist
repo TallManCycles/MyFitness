@@ -31,7 +31,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>MyFitness.MyFitness</string>
 	<key>CFBundleVersion</key>
-	<string>2.0</string>
+	<string>3.0</string>
 	<key>CFBundleIconFiles</key>
 	<array/>
 	<key>UILaunchStoryboardName</key>

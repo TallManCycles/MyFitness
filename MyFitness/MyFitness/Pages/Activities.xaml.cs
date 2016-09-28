@@ -30,7 +30,7 @@ namespace MyFitness.Pages
             foreach (ActivityModel activity in model)
             {
                 var a = new ActivitiesList();
-                a.ActivityName = activity.ActivityName.PadRight(60).Substring(0, 20).Trim();
+                a.ActivityName = activity.ActivityName;
                 a.SufferScore = activity.TSS;
                 a.ActivityDate = activity.Date;
                 a.Distance = activity.Distance;
@@ -41,17 +41,10 @@ namespace MyFitness.Pages
             {
                 ActivityView.ItemsSource = activityList.OrderByDescending(x => x.ActivityDate);
             }
-
-            var i = ActivityView.ItemTemplate;
-
-            i.SetValue(TextCell.TextColorProperty, Color.FromHex(Settings.FontColor));
-            i.SetValue(TextCell.DetailColorProperty, Color.FromHex(Settings.FontColor));
         }
 
         protected override void OnAppearing()
         {
-            
-            
             base.OnAppearing();
         }
 

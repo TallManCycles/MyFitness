@@ -4,25 +4,26 @@
              x:Class="MyFitness.Pages.Activities">
   <Label Text="{Binding MainText}" VerticalOptions="Center" HorizontalOptions="Center" />
   <ScrollView>
-    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10">
-      <Label Text="Activities" FontSize="Large" HorizontalOptions="CenterAndExpand"/>
+    <StackLayout x:Name="MainLayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="10">
+      <Label Text="Your Recent Activities" FontSize="Large" HorizontalOptions="CenterAndExpand" TextColor="#251D57"/>
       <ListView x:Name="ActivityView" 
                 HorizontalOptions="FillAndExpand"                 
                 VerticalOptions="FillAndExpand" 
                 ItemSelected="SelectedCell" BackgroundColor="Transparent">
         <ListView.ItemTemplate>
           <DataTemplate>
-            <ViewCell>
-            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="5">
+            <ViewCell Height="100" x:Name="ViewCells">
+            <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="5" HeightRequest="100">
               
-              <Label Text="{Binding ActivityName, StringFormat='Description: {0}'}" 
-                     TextColor="Black" HorizontalOptions="FillAndExpand"/>
+              <Label x:Name="lblActivityName" Text="{Binding ActivityName}" 
+                     HorizontalOptions="FillAndExpand" FontSize="Medium" TextColor="#251D57"/>
               
-              <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Spacing="10">
-                <Label Text="{Binding Distance, StringFormat='Dist:{0: 0.0}kms'}" 
-                       TextColor="Black" HorizontalOptions="StartAndExpand"/>
-                <Label Text="{Binding SufferScore, StringFormat='Training Load:{0: 0.0}'}" 
-                       TextColor="Black" HorizontalOptions="StartAndExpand"/>                
+              <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" 
+                           VerticalOptions="FillAndExpand" Spacing="5">
+                <Label x:Name="lblDistance" Text="{Binding Distance, StringFormat='Dist:{0: 0.0}kms'}" 
+                       HorizontalOptions="StartAndExpand" TextColor="#251D57" FontSize="Small"/>
+                <Label x:Name="lblTrainingLoad" Text="{Binding SufferScore, StringFormat='Training Load:{0: 0.0}'}"
+                       HorizontalOptions="StartAndExpand" TextColor="#251D57" FontSize="Small"/>                
               
               </StackLayout>
             </StackLayout>

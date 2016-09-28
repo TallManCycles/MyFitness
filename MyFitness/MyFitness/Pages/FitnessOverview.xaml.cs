@@ -34,16 +34,7 @@ namespace MyFitness.Pages
         private void SetColours()
         {
             this.BackgroundColor = Color.FromHex(Settings.BackgroundColor);
-
-            foreach (View v in MainLayout.Children)
-            {
-                if (v.GetType() == typeof(Label))
-                {
-                    Label l = (Label)v;
-                    l.TextColor = Color.FromHex(Settings.FontColor);
-                }
-            }
-        }        
+        }
 
         protected async override void OnAppearing()
         {
@@ -62,7 +53,8 @@ namespace MyFitness.Pages
             lmonth.HorizontalOptions = LayoutOptions.CenterAndExpand;
             var fourtyTwoDayChart = CreateLineChart(DateTime.Now.AddMonths(-2), now);
 
-
+            MainLayout.Children.Add(lseven);
+            MainLayout.Children.Add(sevenDayChart);
             MainLayout.Children.Add(lfourteen);
             MainLayout.Children.Add(fourteenDayChart);
             MainLayout.Children.Add(lmonth);

@@ -48,8 +48,8 @@ namespace MyFitness.Pages
 
             FitnessLabel.TextColor = textColor;
             FitnessValue.TextColor = textColor;
-            lblReadyToRace.TextColor = textColor;
-            lblTrainingHard.TextColor = textColor;
+            //lblReadyToRace.TextColor = textColor;
+            //lblTrainingHard.TextColor = textColor;
 
             //Labels
             lblSevenDay.TextColor = textColor;
@@ -68,6 +68,12 @@ namespace MyFitness.Pages
             lblSixWeekConsistency.TextColor = textColor;
             lblSixWeekRisk.TextColor = textColor;
 
+            lblYesterday.TextColor = textColor;
+            lblYesterdayFitness.TextColor = textColor;
+
+            lblTomorrow.TextColor = textColor;
+            lblTomorrowFitness.TextColor = textColor;
+
             RefreshButton.BackgroundColor = Color.FromHex(Settings.FontColor);
             RefreshButton.TextColor = Color.FromHex(Settings.BackgroundColor);
         }
@@ -84,6 +90,7 @@ namespace MyFitness.Pages
                 GetImprovement();
                 GetConsistency();
                 GetRiskOfInjury();
+                GetPredictions();
             }           
 
             MainLayout.BindingContext = model;
@@ -116,8 +123,40 @@ namespace MyFitness.Pages
 
         private void GetRiskOfInjury()
         {
-            lblSevenDayRisk.Text = _fitness.GetRiskOfInjury(7).ToString("+#;-#;0") + "%";
-            lblSixWeekRisk.Text = _fitness.GetRiskOfInjury(42).ToString("+#;-#;0") + "%";
+            var sevenRisk = _fitness.GetRiskOfInjury(7);
+            var sixWeekRisk = _fitness.GetRiskOfInjury(42);
+
+            if (sevenRisk >= 0 )
+            {
+                lblSevenDayRisk.Text = "LOW";
+            }
+            else if (sevenRisk < 0 && sevenRisk > -40)
+            {
+                lblSevenDayRisk.Text = "MEDIUM";
+            }
+            else
+            {
+                lblSevenDayRisk.Text = "HIGH";
+            }
+
+            if (sixWeekRisk >= 0)
+            {
+                lblSixWeekRisk.Text = "LOW";
+            }
+            else if (sixWeekRisk < 0 && sixWeekRisk > -40)
+            {
+                lblSixWeekRisk.Text = "MEDIUM";
+            }
+            else
+            {
+                lblSixWeekRisk.Text = "HIGH";
+            }
+        }
+
+        private void GetPredictions()
+        {
+            lblYesterdayFitness.Text = _fitness.GetYesterdaysFitness().ToString("0.00");
+            lblTomorrowFitness.Text = _fitness.GetTomorrowsPrediction().ToString("0.00");
         }
     }
 }

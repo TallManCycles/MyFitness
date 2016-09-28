@@ -11,7 +11,7 @@ namespace MyFitness.Pages
 {
     public class Setup : CarouselPage
     {
-        ContentPage swimming, running, welcome, instructions;
+        ContentPage swimming, running, welcome;
         private ILoginManager _loginManager;
 
         public Setup(ILoginManager loginManager)

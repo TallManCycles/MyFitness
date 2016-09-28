@@ -30,17 +30,17 @@ namespace MyFitness.Pages
             var masterPageItems = new List<MasterPageItem>();
             masterPageItems.Add(new MasterPageItem
             {
-                Title = "Fitness Details",
+                Title = "Dashboard",
                 TargetType = typeof(MainPage)
             });
             masterPageItems.Add(new MasterPageItem
             {
-                Title = "Fitness Overview",
+                Title = "Details",
                 TargetType = typeof(FitnessOverview)
             });
             masterPageItems.Add(new MasterPageItem
             {
-                Title = "Activities",
+                Title = "History",
                 TargetType = typeof(Activities)
             });
             masterPageItems.Add(new MasterPageItem

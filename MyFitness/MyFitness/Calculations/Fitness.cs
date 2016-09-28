@@ -94,11 +94,41 @@ namespace MyFitness.Calculations
 
             decimal startRisk = items.FirstOrDefault().Form;
             decimal endRisk = items.ElementAt(items.Count() - 1).Form;
-            decimal returnValue = endRisk - startRisk;
+            decimal result = (endRisk + startRisk) / 2.0M;
 
-            var r = ((decimal)returnValue / (decimal)daysOfRIsk) * 100M;
+            return (int)result;
+        }
 
-            return (int)r;
+        public decimal GetYesterdaysFitness()
+        {
+            IEnumerable<FitnessModel> models = _sql.GetFitnessItems();
+            FitnessModel model = models.FirstOrDefault(x => x.Date.Date == DateTime.Now.AddDays(-1).Date);
+
+            if (model != null && !string.IsNullOrEmpty(model.Fitness.ToString()))
+            {
+                return model.Fitness;
+            }
+            else
+            {
+                var alternate = models.Last();
+
+                if (alternate != null && !string.IsNullOrEmpty(alternate.Fitness.ToString()))
+                {
+                    return alternate.Fitness;
+                }
+                else
+                {
+                    return 0M;
+                }
+            }
+                
+        }
+
+        public decimal GetTomorrowsPrediction()
+        {
+            var today = _sql.GetLatestFitness();
+
+            return CreateModel(today.Fitness, today.Fatigue, 0, DateTime.Now, false).Fitness;
         }
 
         private async Task<Athlete> GetCurrentAthlete()
@@ -154,7 +184,7 @@ namespace MyFitness.Calculations
             return model;
         }
 
-        private FitnessModel CreateModel(decimal fitness, decimal fatigue, decimal currentTSS, DateTime activityDate)
+        private FitnessModel CreateModel(decimal fitness, decimal fatigue, decimal currentTSS, DateTime activityDate, bool saveModel = true)
         {
             FitnessModel model = new FitnessModel();
 
@@ -163,7 +193,10 @@ namespace MyFitness.Calculations
             model.Form = model.Fitness - fatigue;
             model.Fatigue = CalculateATL(fatigue, currentTSS);
 
-            _sql.SaveFitness(model);
+            if (saveModel)
+            {
+                _sql.SaveFitness(model);
+            }
 
             return model;
         }
@@ -171,7 +204,7 @@ namespace MyFitness.Calculations
         private async Task<IEnumerable<Activity>> GetAllPendingActivities()
         {
             IEnumerable<Activity> ac = await _activityService.GetAthleteActivities(Settings.AccessToken);
-            IEnumerable<Activity> actoday = ac.Where(x => DateTime.Parse(x.StartDate).Date > DateTime.Parse(Settings.LastCalculationDate).Date);
+            IEnumerable<Activity> actoday = ac.Where(x => DateTime.Parse(x.StartDate).Date >= DateTime.Parse(Settings.LastCalculationDate).Date);
             return actoday;
         }
 

@@ -52,7 +52,7 @@ namespace MyFitness.Pages
                 {
                     _loginManager.Logout();
                 }
-                else if (item.Title == "Fitness Details")
+                else if (item.Title == "Dashboard")
                 {
                     Detail = new NavigationPage(new MainPage(   DependencyService.Get<ActivityService>(),
                                                                 DependencyService.Get<Sql>()))

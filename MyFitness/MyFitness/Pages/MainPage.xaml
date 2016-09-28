@@ -31,10 +31,10 @@
 
         <!--<charting:SfGauge.XForms.SfLinearGauge x:Name="LinearGuage"/>-->
 
-        <StackLayout Orientation="Horizontal">
+        <!--<StackLayout Orientation="Horizontal">
           <Label x:Name="lblTrainingHard" Text="Training Hard" FontSize="Large" HorizontalOptions="StartAndExpand"/>
           <Label x:Name="lblReadyToRace" Text="Ready To Race" FontSize="Large" HorizontalOptions="EndAndExpand"/>
-        </StackLayout>
+        </StackLayout>-->
 
         <!--<StackLayout Orientation="Horizontal">      
       <Label x:Name="FatigueLabel" Text="Fatigue" FontSize="Large" HorizontalOptions="CenterAndExpand" />
@@ -65,6 +65,16 @@
           <Label x:Name="lblSevenDayRisk" HorizontalOptions="CenterAndExpand"/>
           <Label x:Name="lblRisk" Text="Risk Of Injury" HorizontalOptions="CenterAndExpand"/>
           <Label x:Name="lblSixWeekRisk" HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblYesterday" Text="Yesterday's Fitness" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblTomorrow" Text="Tomorrow's Fitness" HorizontalOptions="CenterAndExpand"/>
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+          <Label x:Name="lblYesterdayFitness" HorizontalOptions="CenterAndExpand"/>
+          <Label x:Name="lblTomorrowFitness" HorizontalOptions="CenterAndExpand"/>
         </StackLayout>
 
         <Button x:Name="RefreshButton" Text="Refresh" FontSize="Large" Clicked="Refresh" HorizontalOptions="FillAndExpand"/>
