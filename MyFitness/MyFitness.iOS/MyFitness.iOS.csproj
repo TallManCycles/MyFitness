@@ -138,6 +138,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhoneSimulator'">
     <CodesignKey>iPhone Distribution: Aaron Day (6CC3355ZN8)</CodesignKey>
     <CodesignProvision>5ef3a5be-1e0a-4888-9a56-209a0163daf2</CodesignProvision>
+    <BuildIpa>True</BuildIpa>
+    <IpaIncludeArtwork>False</IpaIncludeArtwork>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Helpers\Settings.cs" />
